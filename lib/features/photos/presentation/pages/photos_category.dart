@@ -24,7 +24,7 @@ class PhotosCategory extends StatelessWidget {
       drawer: NavigationDrawerCustom(),
       body: GridView.builder(
         padding: EdgeInsets.all(3),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 1 / 1,
           crossAxisSpacing: 0,
