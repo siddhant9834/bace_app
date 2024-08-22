@@ -34,4 +34,24 @@ class Fonts {
       color: color,
     );
   }
+   static TextStyle ubuntu(
+      {required double fontSize,
+      required FontWeight fontWeight,
+      required Color color}) {
+    return GoogleFonts.ubuntu(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    );
+  }
+     static TextStyle firasans(
+      {required double fontSize,
+      required FontWeight fontWeight,
+      required Color color}) {
+    return GoogleFonts.firaSans(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+    );
+  }
 }
