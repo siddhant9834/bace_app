@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "547406038068",
+    "project_id": "mayapur-bace",
+    "storage_bucket": "mayapur-bace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547406038068:android:bcc234a9f183588ec37661",
+        "android_client_info": {
+          "package_name": "com.example.mayapur_bace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVJ_7YrQ7k4XLwpwFVfTnCcDpE8fxTPbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

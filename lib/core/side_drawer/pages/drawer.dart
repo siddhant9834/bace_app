@@ -4,58 +4,69 @@ import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/side_drawer/bloc/drawer_bloc.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
+import 'package:mayapur_bace/core/widgets/app_bar.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/home_screen.dart';
 import 'package:mayapur_bace/features/photos/presentation/pages/photos_category.dart';
 
 class NavigationDrawerCustom extends StatelessWidget {
-  const NavigationDrawerCustom({super.key});
+  final dynamic navigationShell;
+  final String appBarTitle;
+
+  const NavigationDrawerCustom({super.key,  this.navigationShell, required this.appBarTitle});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return BlocListener<DrawerBloc, DrawerState>(
-      listener: (context, state) {
-         if (state is HomeButtonClickedState) {
-          context.go('/home');
-        } else if (state is PhotosButtonClickedState) {
-          context.go('/photos');
-        } else if (state is SevaButtonClickedState) {
-          context.go('/seva');
-        } else if (state is CalendarButtonClickedState) {
-          context.go('/calendar');
-        }
-        // switch (state.runtimeType) {
-        //   case HomeButtonClickedState:
-        //     final homeState = state as HomeButtonClickedState;
-     
-        //     context.go('/home');
-        //     break;
-        //   case PhotosButtonClickedState:
-        //     final photoState = state as PhotosButtonClickedState;
-        //     context.go('/photos');
-        //     break;
-        //   case SevaButtonClickedState:
-        //     final sevaState = state as SevaButtonClickedState;
-        //     context.go('/seva');
-        //     break;
-        //   case CalendarButtonClickedState:
-        //     final CalendarState = state as CalendarButtonClickedState;
-        //     context.go('/calendar');
-        //     break;
-        //   // default:
-        //   //   break;
-        // }
-      },
-      child: Drawer(
+    return Scaffold(
+      body: navigationShell,
+      appBar: ApplicationToolbar(title: appBarTitle, color: ColorPallete.pinkColor),
+      drawer:
+
+          // switch (state.runtimeType) {
+          //   case HomeButtonClickedState:
+          //     final homeState = state as HomeButtonClickedState;
+
+          //     context.go('/home');
+          //     break;
+          //   case PhotosButtonClickedState:
+          //     final photoState = state as PhotosButtonClickedState;
+          //     context.go('/photos');
+          //     break;
+          //   case SevaButtonClickedState:
+          //     final sevaState = state as SevaButtonClickedState;
+          //     context.go('/seva');
+          //     break;
+          //   case CalendarButtonClickedState:
+          //     final CalendarState = state as CalendarButtonClickedState;
+          //     context.go('/calendar');
+          //     break;
+          //   // default:
+          //   //   break;
+          // }
+
+          Drawer(
         width: screenWidth * .8,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildHeader(context),
-              buildMenuItems(context),
-            ],
+        child: BlocListener<DrawerBloc, DrawerState>(
+          listener: (context, state) {
+           if (state is HomeButtonClickedState) {
+              context.push('/home', extra: "Mayapur Bace");
+            } else if (state is PhotosButtonClickedState) {
+              context.push('/images', extra: "Photos Category");
+            } else if (state is SevaButtonClickedState) {
+              context.push('/seva', extra: "Seva");
+            } else if (state is CalendarButtonClickedState) {
+              context.push('/calendar', extra: "Calendar");
+            }
+        },
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                buildHeader(context),
+                buildMenuItems(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -108,6 +119,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           ),
           onTap: () {
             BlocProvider.of<DrawerBloc>(context).add(HomeButtonClickedEvent());
+                    Navigator.of(context).pop();
           },
         ),
         ListTile(
@@ -122,6 +134,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           onTap: () {
             BlocProvider.of<DrawerBloc>(context)
                 .add(PhotosButtonClickedEvent());
+                        Navigator.of(context).pop();
           },
         ),
         ListTile(
@@ -135,6 +148,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           ),
           onTap: () {
             BlocProvider.of<DrawerBloc>(context).add(SevaButtonClickedEvent());
+                    Navigator.of(context).pop();
           },
         ),
         ListTile(
@@ -149,6 +163,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           onTap: () {
             BlocProvider.of<DrawerBloc>(context)
                 .add(CalendarButtonClickedEvent());
+                        Navigator.of(context).pop();
           },
         ),
       ],

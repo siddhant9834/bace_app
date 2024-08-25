@@ -6,8 +6,10 @@
 
 // class PhotosBloc extends Bloc<PhotosEvent, PhotosState> {
 //   PhotosBloc() : super(PhotosInitial()) {
-//     on<PhotosEvent>((event, emit) {
+//    on<
+//   }
+
+//    on<PhotosEvent>((event, emit) {
 //       // TODO: implement event handler
 //     });
-//   }
 // }

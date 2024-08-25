@@ -44,6 +44,13 @@ dependencies:
   flutter_slider_drawer: ^2.1.3
   get_it: ^7.7.0
   intl: ^0.19.0
+  table_calendar: ^3.1.2
+  image_picker: ^1.1.2
+  firebase_auth: ^4.16.0
+  shared_preferences: ^2.3.2
+  flutter_svg: ^2.0.10+1
+  firebase_crashlytics: ^3.4.9
+  firebase_analytics: ^10.8.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +79,10 @@ flutter:
     # - images/a_dot_burr.jpeg
     - assets/images/
     - assets/icons/
+    - assets/images/thumbnail_images/
+    - assets/images/thumbnail_images/lifeatbace.jpg
+
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
