@@ -36,4 +36,13 @@ class ColorPallete {
 // #8687E7
 // Colors.(0x979797);
   static Color dividerColor = Color.fromARGB(255, 151, 151, 151);
+
+
+
+
 }
+  Color backgroundColor = Colors.white;
+Color buttonColor = const Color(0xff4052B4);
+Color authTextColor = const Color(0xff172B4D);
+Color whiteTextColor = Colors.white;
+Color blackTextColor = Colors.black;

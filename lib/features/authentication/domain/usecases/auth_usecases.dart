@@ -8,7 +8,8 @@ class AuthUseCases{
     return await locator<AuthRepository>().signIn(email, password);
   }
 
-  Future<String?> registerUser(String email, String password) async {
-    return await locator<AuthRepository>().registration(email, password);
+  Future<String?> registerUser({ required email,  required password, required fullName,  required phoneNumber,}) async {
+    return await locator<AuthRepository>().registration(email, password, fullName, phoneNumber);
   }
+
 }

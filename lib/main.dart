@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
 import 'package:mayapur_bace/core/routes/routes.dart';
-import 'package:mayapur_bace/core/side_drawer/bloc/drawer_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mayapur_bace/core/side_drawer/presentation/bloc/drawer_bloc.dart';
+import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_bloc.dart';
 
-void main()async{
-  
+
+void main() async {
 //   await Firebase.initializeApp(
 //     options: DefaultFirebaseOptions.currentPlatform,
 // );
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setUp();
   // WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,11 @@ class MyApp extends StatelessWidget {
         BlocProvider<DrawerBloc>(
           create: (context) => DrawerBloc(),
         ),
+         BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(),
+        ),
+     
+     
       ],
       child: MaterialApp.router(
         routerConfig: router,

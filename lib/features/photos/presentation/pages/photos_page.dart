@@ -2,6 +2,8 @@
 // import 'package:mayapur_bace/core/theme/color_pallet.dart';
 // import 'package:mayapur_bace/core/theme/fonts.dart';
 
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,42 +13,80 @@ import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/features/photos/data/datasource/firebase_datasource.dart';
 import 'package:mayapur_bace/features/photos/domain/usecases/update_image_url.dart';
 
-
-
 class CategoryImagesPage extends StatelessWidget {
   final String category;
   final FirebaseDatasource firebaseDatasource = FirebaseDatasource();
 
   CategoryImagesPage({super.key, required this.category});
-//   Future<List<Map<String, String>>> _fetchImages() async {
-//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-//   final List<Map<String, String>>imagesData = [];
+Future<List<Map<String, String>>> fetchImages({required String category}) async {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final List<Map<String, String>> imagesData = [];
+log('**** $category');
+  try {
+    final QuerySnapshot snapshot = await _firestore
+        .collection('photos')
+        .where('category', isEqualTo: category)
+        .get();
 
-//   try {
-//     final QuerySnapshot snapshot = await _firestore
-//         .collection('photos')
-//         .where('category', isEqualTo: category)
-//         .get();
+    log('Documents found: ${snapshot.docs.length}');
 
-//     for (var doc in snapshot.docs) {
-//       if (doc.exists && doc.data() != null) {
-//         final data = doc.data() as Map<String, dynamic>;
-//         final imageUrl = data['url'] as String?;
-//         final name= data['name'] as String?;
-//          if (imageUrl != null && name != null) {
-//           imagesData.add({
-//             'url': imageUrl,
-//             'name': name,
-//           });
-//         }
-//       }
-//     }
-//   } catch (e) {
-//     print('Error fetching images: $e');
-//   }
+    for (var doc in snapshot.docs) {
+      if (doc.exists && doc.data() != null) {
+        final data = doc.data() as Map<String, dynamic>;
+        final imageUrl = data['url'] as String?;
+        final name = data['name'] as String?;
+        
+        if (imageUrl != null && name != null) {
+          imagesData.add({
+            'url': imageUrl,
+            'name': name,
+          });
+          log('Image added: $name - $imageUrl');
+        } else {
+          log('Missing data in document: ${doc.id}');
+        }
+      } else {
+        log('Document does not exist: ${doc.id}');
+      }
+    }
+  } catch (e) {
+    log('Error fetching images: $e');
+  }
 
-//   return imagesData;
-// }
+  return imagesData;
+}
+
+  // Future<List<Map<String, String>>> fetchImages(
+  //     {required String category}) async {
+  //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  //   final List<Map<String, String>> imagesData = [];
+
+  //   try {
+  //     final QuerySnapshot snapshot = await _firestore
+  //         .collection('photos')
+  //         .where('category', isEqualTo: category)
+  //         .get();
+
+  //     for (var doc in snapshot.docs) {
+  //       if (doc.exists && doc.data() != null) {
+  //         final data = doc.data() as Map<String, dynamic>;
+  //         final imageUrl = data['url'] as String?;
+  //         final name = data['name'] as String?;
+  //         if (imageUrl != null && name != null) {
+  //           imagesData.add({
+  //             'url': imageUrl,
+  //             'name': name,
+  //           });
+  //         }
+  //       }
+  //     }
+  //     log('in ftech images');
+  //   } catch (e) {
+  //     print('Error fetching images: $e');
+  //   }
+
+  //   return imagesData;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +103,13 @@ class CategoryImagesPage extends StatelessWidget {
       //   ),
       // ),
       body: FutureBuilder<List<Map<String, String>>>(
+        // future: fetchImages(category: category),
+
         // future: firebaseDatasource.fetchImages(category),
         future: locator<FetchImage>().call(category),
         builder: (context, snapshot) {
+          log('before if and else');
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -75,6 +119,7 @@ class CategoryImagesPage extends StatelessWidget {
           }
 
           final imagesData = snapshot.data!;
+         
 
           return ListView.builder(
             padding: EdgeInsets.all(3),
@@ -129,6 +174,9 @@ class CategoryImagesPage extends StatelessWidget {
     );
   }
 }
+
+
+
 // class CategoryImagesPage extends StatelessWidget {
 //   final String category;
 //   final FirebaseDatasource firebaseDatasource = FirebaseDatasource();
@@ -150,7 +198,10 @@ class CategoryImagesPage extends StatelessWidget {
 //         ),
 //       ),
 //       body: FutureBuilder<List<Map<String, String>>>(
+//                         // future: fetchImages(category: category),
 //         future: locator<FetchImage>().call(category),
+
+//         // future: locator<FetchImage>().call(category),
 //         builder: (context, snapshot) {
 //           if (snapshot.connectionState == ConnectionState.waiting) {
 //             return const Center(child: CircularProgressIndicator());

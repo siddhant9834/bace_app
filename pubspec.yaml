@@ -51,6 +51,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   firebase_crashlytics: ^3.4.9
   firebase_analytics: ^10.8.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -81,7 +82,9 @@ flutter:
     - assets/icons/
     - assets/images/thumbnail_images/
     - assets/images/thumbnail_images/lifeatbace.jpg
-
+    - assets/icons/bace_logo.jpg
+    - assets/icons/profile_emoji.png
+    - assets/icons/edit_pencil.svg
 
   #   - images/a_dot_ham.jpeg
 

@@ -54,4 +54,10 @@ class Fonts {
       color: color,
     );
   }
+
+}
+
+TextStyle getHeebo(FontWeight fontWeight, double fontSize, Color fontColor) {
+  return GoogleFonts.heebo(
+      fontWeight: fontWeight, fontSize: fontSize, color: fontColor);
 }
