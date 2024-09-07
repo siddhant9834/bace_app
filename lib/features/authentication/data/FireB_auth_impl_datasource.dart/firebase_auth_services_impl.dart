@@ -3,7 +3,6 @@
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mayapur_bace/features/authentication/data/model/auth_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,11 +32,22 @@ class AuthService {
           'email': email,
           'fullName': fullName,
           'phoneNumber': phoneNumber,
-          'role': 'member',
+          'role': 'Member',
         'profilePicUrl': '',
+        'password' : password,
           // 'profilePic': imageUrl,
         });
+           await _firestore.collection('seva_assigned').doc(email).set({
+          'email': email,
+          'fullName': fullName,
+          'Ph': phoneNumber,
+          'role': 'Member',
+          'seva':'Not Assigned Yet'
+          // 'profilePic': imageUrl,
+        });
+
       }
+
 
       return 'Success';
     } on FirebaseAuthException catch (e) {

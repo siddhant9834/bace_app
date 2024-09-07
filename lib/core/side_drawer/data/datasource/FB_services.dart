@@ -1,12 +1,8 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mayapur_bace/features/authentication/data/model/auth_model.dart';
 import 'package:mayapur_bace/core/side_drawer/data/model/user_profile_model.dart';
 
 class ProfileService {
@@ -21,14 +17,15 @@ class ProfileService {
     User? user = _auth.currentUser;
     return user?.email;
   }
- Future<ProfileModel> getProfile(String userEmail) async {
+
+  Future<ProfileModel> getProfile(String userEmail) async {
     try {
       log(userEmail.toString());
 
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
           .where('email', isEqualTo: userEmail)
-          .get();
+           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return ProfileModel.fromMap(

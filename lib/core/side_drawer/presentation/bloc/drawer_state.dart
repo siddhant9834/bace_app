@@ -12,3 +12,5 @@ class PhotosButtonClickedState extends DrawerState{}
 class SevaButtonClickedState extends DrawerState{}
 
 class CalendarButtonClickedState extends DrawerState{}
+class MembersButtonClickedState extends DrawerState{}
+class SevaListButtonClickedState extends DrawerState{}

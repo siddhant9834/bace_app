@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_auth_services.dart';
+import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 
 void showProfileImagePickerOption(BuildContext context) {

@@ -7,8 +7,12 @@ import 'package:mayapur_bace/features/authentication/presentation/pages/login_pa
 import 'package:mayapur_bace/features/authentication/presentation/pages/registration_screen.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/home_screen.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/quote_screen.dart';
+import 'package:mayapur_bace/features/members/presentation/pages/members_list_view.dart';
 import 'package:mayapur_bace/features/photos/presentation/pages/photos_category.dart';
 import 'package:mayapur_bace/features/photos/presentation/pages/photos_page.dart';
+import 'package:mayapur_bace/features/seva/presentation/pages/seva_details_calendar.dart';
+import 'package:mayapur_bace/features/seva/presentation/pages/seva_list_screen.dart';
+import 'package:mayapur_bace/features/seva/presentation/pages/seva_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final homeTabNavigatorKey = GlobalKey<NavigatorState>();
@@ -17,6 +21,10 @@ final booksTabNavigatorKey = GlobalKey<NavigatorState>();
 final settingsTabNavigatorKey = GlobalKey<NavigatorState>();
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final onboardingTabNavigatorKey = GlobalKey<NavigatorState>();
+final membersTabNavigatorKey = GlobalKey<NavigatorState>();
+final sevaNavigationKey = GlobalKey<NavigatorState>();
+final sevaListNavigatorKey = GlobalKey<NavigatorState>();
+
 const String KEYLOGIN = 'Login';
 
 final GoRouter router = GoRouter(
@@ -117,20 +125,6 @@ final GoRouter router = GoRouter(
                       child: PhotosCategory(),
                     );
                   },
-                  // routes: [
-                  // GoRoute(
-                  // path: 'image_category',
-                  // name: MyAppRouteConstants.imageCategoryScreen,
-                  // pageBuilder: (context, state) {
-                  // // final selectDate = state.extra as DateTime;
-                  //   return MaterialPage(
-                  //     key: state.pageKey,
-                  //     child: PhotosCategory(),
-
-                  //   );
-
-                  // //  selectDate(context);
-                  // },
                   routes: [
                     GoRoute(
                         path: 'image_screen',
@@ -151,176 +145,58 @@ final GoRouter router = GoRouter(
                   // ]
                   )
             ]),
-          ])
+            StatefulShellBranch(navigatorKey: sevaNavigationKey, routes: [
+              GoRoute(
+                path: '/seva',
+                name: MyAppRouteConstants.sevaRouteName,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: DailySevaScreen(),
+                  );
+                },
+              )
+            ]),
+               StatefulShellBranch(navigatorKey: sevaListNavigatorKey, routes: [
+              GoRoute(
+                path: '/seva_list',
+                name: MyAppRouteConstants.sevaListScreen,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: SevaListScreen(),
+                  );
+                },
+                routes: [
+                       GoRoute(
+                        path: 'seva_details_screen',
+                        name: MyAppRouteConstants.sevaDetailsScreen,
+                        pageBuilder: (context, state) {
+                          final inputEmail = state.extra as String;
+                          // final selectedCategory = state.pathParameters['categoryId'] ?? ''; this line created very big chaos in project developement i am not removing this line because by this rememberance we can avoid such bugs
+
+                          return MaterialPage(
+                            key: state.pageKey,
+                            child:
+                                SevaDetailsScreen(inputEmail: inputEmail),
+                          );
+                          //  selectDate(context);
+                        })
+                ]
+              )
+            ]),
+            StatefulShellBranch(navigatorKey: membersTabNavigatorKey, routes: [
+              GoRoute(
+                path: '/members',
+                name: MyAppRouteConstants.membersScreenList,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: UserListView(),
+                  );
+                },
+              )
+            ]),
+    
+          ]),
     ]);
-
-// GoRoute(
-//   path: '/home',
-//   builder: (context, state) => HomeScreen(),
-//       // pageBuilder: (context, state) {
-//       //       return MaterialPage(
-//       //         key: state.pageKey,
-//       //         child: HomeScreen(),
-//       //       );
-//       //     },
-// ),
-// GoRoute(
-//   path: '/photos',
-//   builder: (context, state) => PhotosCategory(),
-//       // pageBuilder: (context, state) {
-//       //       return MaterialPage(
-//       //         key: state.pageKey,
-//       //         child: PhotosCategory(),
-//       //       );
-//       //     },
-// ),
-// GoRoute(
-//   path: '/seva',
-//   builder: (context, state) => SevaScreen(),
-//       // pageBuilder: (context, state) {
-//       //       return MaterialPage(
-//       //         key: state.pageKey,
-//       //         child: SevaScreen(),
-//       //       );
-//       //     },
-// ),
-// GoRoute(
-//   path: '/calendar',
-//   builder: (context, state) => CalendarScreen(),
-//       // pageBuilder: (context, state) {
-//       //       return MaterialPage(
-//       //         key: state.pageKey,
-//       //         child: CalendarScreen(),
-//       //       );
-//       //     },
-// ),
-
-// initialLocation: '/home',
-
-// final homeTabNavigatorKey = GlobalKey<NavigatorState>();
-// final imageTabNavigationKey = GlobalKey<NavigatorState>();
-// final booksTabNavigatorKey = GlobalKey<NavigatorState>();
-// final settingsTabNavigatorKey = GlobalKey<NavigatorState>();
-// final _rootNavigatorKey = GlobalKey<NavigatorState>();
-// final onboardingTabNavigatorKey = GlobalKey<NavigatorState>();
-// const String KEYLOGIN = 'Login';
-
-// final GoRouter router = GoRouter(
-//     initialLocation: '/login',
-//     navigatorKey: _rootNavigatorKey,
-//     redirect: (context, state) async {
-//       final sharedPref = await SharedPreferences.getInstance();
-//       final isLoggedIN = sharedPref.getBool(KEYLOGIN) ?? false;
-
-//       await Future.delayed(const Duration(seconds: 2));
-
-//       if (isLoggedIN) {
-//         return '/home';
-//       } else {
-//         return '/login';
-//       }
-//     },
-//     routes: [
-//       // GoRoute(
-//       //   path: '/login',
-//       //   name: MyAppRouteConstants.loginRouteName,
-//       //   builder: (context, state) => AuthSignIn(),
-//       // ),
-//       GoRoute(
-//         path: '/login',
-//         name: MyAppRouteConstants.loginRouteName,
-//         builder: (context, state) => Login(),
-//       ),
-//        GoRoute(
-//         path: '/home',
-//         name: MyAppRouteConstants.homeRouteName,
-//         builder: (context, state) => HomeScreen(),
-//       ),
-//       // GoRoute(
-//       //   path: '/register',
-//       //   name: MyAppRouteConstants.registerRouteName,
-//       //   builder: (context, state) => Registration(),
-//       // ),
-//       StatefulShellRoute.indexedStack(
-//           // builder: (context, state, navigationShell) =>
-//           //     NavigationDrawerCustom(navigationShell: navigationShell),
-//           builder: (context, state, navigationShell) {
-//             final title = state.extra as String? ?? "Mayapur Bace";
-//             log(title);
-//             return NavigationDrawerCustom(
-//               navigationShell: navigationShell,
-//               appBarTitle: title,
-//             );
-//           },
-//           branches: [
-//             StatefulShellBranch(navigatorKey: homeTabNavigatorKey, routes: [
-//               GoRoute(
-//                   path: '/home',
-//                   name: MyAppRouteConstants.homeRouteName,
-//                   pageBuilder: (context, state) {
-//                     return MaterialPage(
-//                       key: state.pageKey,
-//                       child: HomeScreen(),
-//                     );
-//                   },
-//                   routes: [
-//                     GoRoute(
-//                         path: 'show_quote',
-//                         name: MyAppRouteConstants.moreQuotesScreen,
-//                         pageBuilder: (context, state) {
-//                           final selectDate = state.extra as DateTime?;
-//                           return MaterialPage(
-//                             key: state.pageKey,
-//                             child: ShowPerticularQuoteScreen(
-//                                 selectDate: selectDate ?? DateTime.now()),
-//                           );
-//                           //  selectDate(context);
-//                         })
-//                   ])
-//             ]),
-//             StatefulShellBranch(navigatorKey: imageTabNavigationKey, routes: [
-//               GoRoute(
-//                   path: '/images',
-//                   name: MyAppRouteConstants.imagesRouteName,
-//                   pageBuilder: (context, state) {
-//                     return MaterialPage(
-//                       key: state.pageKey,
-//                       child: PhotosCategory(),
-//                     );
-//                   },
-//                   // routes: [
-//                   // GoRoute(
-//                   // path: 'image_category',
-//                   // name: MyAppRouteConstants.imageCategoryScreen,
-//                   // pageBuilder: (context, state) {
-//                   // // final selectDate = state.extra as DateTime;
-//                   //   return MaterialPage(
-//                   //     key: state.pageKey,
-//                   //     child: PhotosCategory(),
-
-//                   //   );
-
-//                   // //  selectDate(context);
-//                   // },
-//                   routes: [
-//                     GoRoute(
-//                         path: 'image_screen',
-//                         name: MyAppRouteConstants.imageDispalyScreen,
-//                         pageBuilder: (context, state) {
-//                           final selectedCategory = state.extra as String;
-//                           // final selectedCategory = state.pathParameters['categoryId'] ?? ''; this line created very big chaos in project developement i am not removing this line because by this rememberance we can avoid such bugs
-
-//                           return MaterialPage(
-//                             key: state.pageKey,
-//                             child:
-//                                 CategoryImagesPage(category: selectedCategory),
-//                           );
-//                           //  selectDate(context);
-//                         })
-//                   ]
-//                   // )
-//                   // ]
-//                   )
-//             ]),
-//           ])
-//     ]);

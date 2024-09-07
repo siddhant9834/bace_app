@@ -1,14 +1,10 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
-import 'package:mayapur_bace/core/side_drawer/presentation/bloc/drawer_bloc.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
-import 'package:mayapur_bace/features/authentication/domain/usecases/auth_usecases.dart';
+import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_event.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_state.dart';
@@ -62,20 +58,36 @@ class _LoginState extends State<Login> {
               pref.setBool(keylogin, true);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  behavior: SnackBarBehavior.floating,
+                  padding: EdgeInsets.all(20),
+                  backgroundColor: Colors.teal,
+                  content: Text(
+                    "Logged in Successfully",
+                    style: Fonts.ubuntu(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: ColorPallete.blackColor),
+                  ),
                 ),
               );
               context.go('/home');
             }
-          
-          }
-            else if(state is AuthErrorState){
-                ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
+          } else if (state is AuthErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                padding: EdgeInsets.all(20),
+                backgroundColor: ColorPallete.logoutRedColor,
+                content: Text(
+                  state.message,
+                  style: Fonts.ubuntu(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: ColorPallete.whiteColor),
                 ),
-              );
-            }
+              ),
+            );
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -87,8 +99,8 @@ class _LoginState extends State<Login> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(flex: 2, child: SizedBox()),
-                  SvgPicture.asset(
-                    'assets/icons/coditas_logo.svg',
+                  Image.asset(
+                    'assets/icons/iskcon_logo_bg.png',
                     // height: 96,
                     // width: 32,
                   ),
@@ -218,11 +230,10 @@ class _LoginState extends State<Login> {
                           fontStyle: FontStyle.normal),
                     ),
                     onPressed: () async {
-                 
                       BlocProvider.of<AuthBloc>(context).add(LoginEvent(
                           emailController.text, passwordController.text));
-                          
-                              //  BlocProvider.of<AuthBloc>(context).add(FetchProfileDataEvent());
+
+                      //  BlocProvider.of<AuthBloc>(context).add(FetchProfileDataEvent());
 
                       // if (formKey.currentState!.validate()) {
                       //   String username = usernameController.text;
@@ -248,7 +259,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ),
-             
+
                   TextButton(
                       onPressed: () {
                         context.go('/login/register');

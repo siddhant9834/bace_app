@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
 import 'package:mayapur_bace/core/routes/page_route_constants.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
-import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_auth_services.dart';
+import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
+import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/features/authentication/data/FireB_auth_impl_datasource.dart/firebase_auth_services_impl.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_event.dart';
@@ -63,25 +64,32 @@ class _RegistrationState extends State<Registration> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is UserRegisteredState) {
-            if (state.message!.contains('Success')) {
-              // context.pushNamed('/home');
-              // print('pushed');
+            if (state.message.contains('Success')) {
               context.go('/login');
-              // context.pushNamed(
-              //   MyAppRouteConstants.loginRouteName,
-              // );
               log('Register Event: ${state.message}');
-
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.message),
+                  behavior: SnackBarBehavior.floating,
+                  padding: EdgeInsets.all(20),
+                  backgroundColor: Colors.teal,
+                  content: Text(
+                      'Welcome to Mayapur Bace, now you can proceed to login'),
                 ),
               );
             }
           } else if (state is AuthErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message),
+                behavior: SnackBarBehavior.floating,
+                padding: EdgeInsets.all(20),
+                backgroundColor: Colors.teal,
+                content: Text(
+                  state.message,
+                  style: Fonts.ubuntu(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
+                      color: ColorPallete.blackColor),
+                ),
               ),
             );
           }
@@ -96,7 +104,7 @@ class _RegistrationState extends State<Registration> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Given Name',
+                    'Full Name',
                     style: TextStyle(
                       fontSize: 14,
                       color: ColorPallete.blackColor,
@@ -110,13 +118,16 @@ class _RegistrationState extends State<Registration> {
                   child: TextFormField(
                     controller: _newFullNameNameController,
                     keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
                       labelStyle: TextStyle(color: Colors.blue),
-                      hintText: 'Enter Full Name',
-                      hintStyle: TextStyle(fontSize: 15),
+                      hintText: 'Ex- Siddhant Nilage',
+                      hintStyle: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.withOpacity(0.8),
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
@@ -139,7 +150,7 @@ class _RegistrationState extends State<Registration> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Enter Email',
+                    'Email',
                     style: TextStyle(
                       fontSize: 14,
                       color: ColorPallete.blackColor,
@@ -160,8 +171,9 @@ class _RegistrationState extends State<Registration> {
                       ),
                       hintStyle: TextStyle(
                         fontSize: 15,
+                        color: Colors.grey.withOpacity(0.8),
                       ),
-                      hintText: 'Enter Email',
+                      hintText: 'Ex- siddhantn2002@gmail.com',
                       fillColor: const Color.fromARGB(255, 18, 18, 18),
                       // border: OutlineInputBorder(
                       //   borderRadius: BorderRadius.circular(8.0),
@@ -205,8 +217,11 @@ class _RegistrationState extends State<Registration> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue),
                     ),
-                    hintText: 'Enter Phone Number',
-                    hintStyle: TextStyle(fontSize: 15),
+                    hintText: 'Ex- 9834599998',
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey.withOpacity(0.8),
+                    ),
                     fillColor: const Color.fromARGB(255, 18, 18, 18),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -248,8 +263,11 @@ class _RegistrationState extends State<Registration> {
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                       ),
-                      hintStyle: TextStyle(fontSize: 15),
-                      hintText: 'Enter password',
+                      hintStyle: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.withOpacity(0.8),
+                      ),
+                      hintText: 'It\'s your choice',
                       fillColor: const Color.fromARGB(255, 18, 18, 18),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
@@ -296,12 +314,10 @@ class _RegistrationState extends State<Registration> {
                     //   phoneNumber: _newPhoneNumberController.text,
                     //   fullName: _newFullNameNameController.text,
                     BlocProvider.of<AuthBloc>(context).add(RegisterUserEvent(
-                      
                       email: _newEmailController.text,
                       password: _newPasswordController.text,
                       fullName: _newFullNameNameController.text,
                       phoneNumber: _newPhoneNumberController.text,
-
                     ));
                   },
                 ),

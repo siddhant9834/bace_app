@@ -12,7 +12,7 @@ import 'package:mayapur_bace/core/side_drawer/presentation/widgete/change_profil
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/core/widgets/app_bar.dart';
-import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_auth_services.dart';
+import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
 import 'package:mayapur_bace/core/side_drawer/data/model/user_profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,10 +65,12 @@ class NavigationDrawerCustom extends StatelessWidget {
               context.pushReplacement('/home', extra: "Mayapur Bace");
             } else if (state is PhotosButtonClickedState) {
               context.pushReplacement('/images', extra: "Photos Category");
+            } else if (state is MembersButtonClickedState) {
+              context.pushReplacement('/members', extra: "Members");
             } else if (state is SevaButtonClickedState) {
-              context.pushReplacement('/seva', extra: "Seva");
-            } else if (state is CalendarButtonClickedState) {
-              context.pushReplacement('/calendar', extra: "Calendar");
+              context.pushReplacement('/seva', extra: "Seva Chart");
+            } else if (state is SevaListButtonClickedState) {
+              context.pushReplacement('/seva_list', extra: "Seva List");
             }
           },
           child: SingleChildScrollView(
@@ -120,9 +122,9 @@ class NavigationDrawerCustom extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: Icon(Icons.cleaning_services),
+          leading: Icon(Icons.calendar_month),
           title: Text(
-            'Seva',
+            'Seva Calendar',
             style: Fonts.ubuntu(
                 fontSize: 20,
                 fontWeight: FontWeight.w400,
@@ -134,9 +136,9 @@ class NavigationDrawerCustom extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: Icon(Icons.calendar_month),
+          leading: Icon(Icons.cleaning_services),
           title: Text(
-            'Vaishnav Calendar',
+            'Seva List',
             style: Fonts.ubuntu(
                 fontSize: 20,
                 fontWeight: FontWeight.w400,
@@ -144,7 +146,22 @@ class NavigationDrawerCustom extends StatelessWidget {
           ),
           onTap: () {
             BlocProvider.of<DrawerBloc>(context)
-                .add(CalendarButtonClickedEvent());
+                .add(SevaListButtonClickedEvent());
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.people_sharp),
+          title: Text(
+            'Members of Bace',
+            style: Fonts.ubuntu(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+                color: ColorPallete.blackColor),
+          ),
+          onTap: () {
+            BlocProvider.of<DrawerBloc>(context)
+                .add(MembersButtonClickedEvent());
             Navigator.of(context).pop();
           },
         ),
@@ -214,9 +231,14 @@ Widget buildHeader(BuildContext context, User user) {
                         width: 100,
                         height: 100,
                         placeholder: (context, url) =>
-                            CircularProgressIndicator(), 
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error), 
+                            CircularProgressIndicator(),
+                        // errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/default_dp_img.jpg',
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
                       ),
                     ),
                   ),
@@ -236,7 +258,9 @@ Widget buildHeader(BuildContext context, User user) {
                   )
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Text(
                 // 'HH Srila Prabhupad',
                 profile.fullName,

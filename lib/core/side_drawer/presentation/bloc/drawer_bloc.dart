@@ -12,24 +12,38 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     on<PhotosButtonClickedEvent>(photosButtonClickedEvent);
     on<SevaButtonClickedEvent>(sevaButtonClickedEvent);
     on<CalendarButtonClickedEvent>(calendarButtonClickedEvent);
+    on<MembersButtonClickedEvent>(membersButtonClickedEvent);
+
+    on<SevaListButtonClickedEvent>(sevaListButtonClickedEvent);
   }
 
-  FutureOr<void> homeButtonClickedEvent(HomeButtonClickedEvent event, Emitter<DrawerState> emit) {
+  FutureOr<void> homeButtonClickedEvent(
+      HomeButtonClickedEvent event, Emitter<DrawerState> emit) {
     emit(HomeButtonClickedState());
   }
 
-  FutureOr<void> photosButtonClickedEvent(PhotosButtonClickedEvent event, Emitter<DrawerState> emit) {
-        emit(PhotosButtonClickedState());
-
+  FutureOr<void> photosButtonClickedEvent(
+      PhotosButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(PhotosButtonClickedState());
   }
 
-  FutureOr<void> sevaButtonClickedEvent(SevaButtonClickedEvent event, Emitter<DrawerState> emit) {
-        emit(SevaButtonClickedState());
-
+  FutureOr<void> sevaButtonClickedEvent(
+      SevaButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(SevaButtonClickedState());
   }
 
-  FutureOr<void> calendarButtonClickedEvent(CalendarButtonClickedEvent event, Emitter<DrawerState> emit) {
-        emit(CalendarButtonClickedState());
+  FutureOr<void> calendarButtonClickedEvent(
+      CalendarButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(CalendarButtonClickedState());
+  }
 
+  FutureOr<void> membersButtonClickedEvent(
+      MembersButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(MembersButtonClickedState());
+  }
+
+  FutureOr<void> sevaListButtonClickedEvent(
+      SevaListButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(SevaListButtonClickedState());
   }
 }

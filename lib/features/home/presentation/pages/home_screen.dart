@@ -1,5 +1,6 @@
 // import 'dart:developer';
 
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:mayapur_bace/features/home/data/model/quote_model.dart';
 import 'package:mayapur_bace/features/home/presentation/bloc/home_bloc.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/quote_screen.dart';
-import 'package:mayapur_bace/features/home/presentation/widgets/datepicker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,11 +25,11 @@ class HomeScreenState extends State<HomeScreen> {
 
     var formatter = DateFormat('dd-MMM');
     String formattedDate = formatter.format(now);
-
+    log(formattedDate);
     QuoteDetails? quoteDetails = QuoteDetails.getQuoteForDate(formattedDate);
 
     return Scaffold(
-          //  appBar: ApplicationToolbar(title: 'Mayapur Bace', color: ColorPallete.pinkColor,),
+      //  appBar: ApplicationToolbar(title: 'Mayapur Bace', color: ColorPallete.pinkColor,),
       // drawer: NavigationDrawerCustom(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -169,12 +169,12 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-    DateTime? selectedDate;
+  DateTime? selectedDate;
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate ?? DateTime.now(), 
+      initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
@@ -187,7 +187,8 @@ class HomeScreenState extends State<HomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ShowPerticularQuoteScreen(selectDate: selectedDate!),
+          builder: (context) =>
+              ShowPerticularQuoteScreen(selectDate: selectedDate!),
         ),
       );
       // context.push('/home/show_quote', extra: selectedDate);
