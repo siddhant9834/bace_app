@@ -29,25 +29,25 @@ class AuthService {
 
       if (user != null) {
         await _firestore.collection('users').doc().set({
+          'status': FieldValue.arrayUnion([DateTime.now().toIso8601String()]),
           'email': email,
           'fullName': fullName,
           'phoneNumber': phoneNumber,
           'role': 'Member',
-        'profilePicUrl': '',
-        'password' : password,
+          'profilePic':
+              'https://firebasestorage.googleapis.com/v0/b/mayapur-bace.appspot.com/o/users_profile_images%2F1000050061.jpg?alt=media&token=f4578a49-92d9-4c96-8f32-019f8da1878e',
+          'password': password,
           // 'profilePic': imageUrl,
         });
-           await _firestore.collection('seva_assigned').doc(email).set({
-          'email': email,
+        await _firestore.collection('seva_assigned').doc(email).set({
+          // 'email': email,
           'fullName': fullName,
           'Ph': phoneNumber,
-          'role': 'Member',
-          'seva':'Not Assigned Yet'
+          // 'role': 'Member',
+          'seva': 'Not Assigned Yet'
           // 'profilePic': imageUrl,
         });
-
       }
-
 
       return 'Success';
     } on FirebaseAuthException catch (e) {

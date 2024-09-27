@@ -1,19 +1,15 @@
-
-
-
 import 'package:mayapur_bace/core/side_drawer/domain/entity/entity_model.dart';
 
 class ProfileModel extends ProfileEntity {
-  const ProfileModel({
-        // required super.uid,
-    required super.email,
-    required super.fullName,
-    required super.phoneNumber,
-    required super.role,
-        required super.profilePic
-
-
-  });
+  const ProfileModel(
+      {
+      // required super.uid,
+      required super.email,
+      required super.fullName,
+      required super.phoneNumber,
+      required super.status,
+      required super.role,
+      required super.profilePic});
 
   factory ProfileModel.fromMap(Map<String, dynamic> data) {
     return ProfileModel(
@@ -22,8 +18,10 @@ class ProfileModel extends ProfileEntity {
       fullName: data['fullName']?.toString() ?? '',
       phoneNumber: data['phoneNumber']?.toString() ?? '',
       role: data['role']?.toString() ?? '',
-      profilePic: data['profilePic'].toString() ?? '',
+            // status: data['status'],
+status: List<bool>.from(data['status'] as List<dynamic>),
 
+      profilePic: data['profilePic'].toString() ?? '',
     );
   }
 

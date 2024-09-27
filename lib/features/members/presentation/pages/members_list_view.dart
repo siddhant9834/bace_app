@@ -1,7 +1,9 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
+import 'package:mayapur_bace/core/side_drawer/presentation/pages/drawer.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/features/members/data/model/members_model.dart';
@@ -33,34 +35,70 @@ class UserListView extends StatelessWidget {
       return currentUser.role;
     }
 
-    return FutureBuilder<String?>(
-      future: getCurrentUserRole(getEmail()),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData) {
-          final userRole = snapshot.data;
+    // return FutureBuilder<String?>(
+    // future: getCurrentUserRole(getEmail()),
+    // builder: (context, snapshot) {
+    // if (snapshot.connectionState == ConnectionState.waiting) {
+    //   return const Center(child: CircularProgressIndicator());
+    // } else if (snapshot.hasError) {
+    //   return Center(child: Text('Error: ${snapshot.error}'));
+    // } else if (snapshot.hasData) {
+    //   final userRole = snapshot.data;
 
-          return Scrollbar(
-            trackVisibility: true,
-            thickness: 10,
-            child: FutureBuilder<List<MembersModel>>(
-              future: locator<GetMembersUseCase>().call(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  List<MembersModel> members = snapshot.data!;
-                  return Container(
+    return Scrollbar(
+      trackVisibility: true,
+      thickness: 10,
+      child: FutureBuilder<List<MembersModel>>(
+        future: locator<GetMembersUseCase>().call(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            List<MembersModel> members = snapshot.data!;
+            int memberCount = 0;
+            for (var member in members) {
+              bool latestStatus =
+                  member.status.isNotEmpty ? member.status.last : false;
+              if (latestStatus) {
+                memberCount++;
+              }
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Total IN Count: ',
+                      style: Fonts.firasans(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: ColorPallete.blackColor),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: '$memberCount',
+                            style: Fonts.ubuntu(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                color: ColorPallete.greenColor)),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     child: ListView.builder(
                       itemCount: members.length,
                       itemBuilder: (context, index) {
                         final MembersModel member = members[index];
+                        bool latestStatus = member.status.isNotEmpty
+                            ? member.status.last
+                            : false;
+
                         return Padding(
                           padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
                           child: SizedBox(
@@ -68,9 +106,9 @@ class UserListView extends StatelessWidget {
                             width: double.infinity,
                             child: InkWell(
                               onTap: () {
-                                if (userRole == 'Admin' ||
-                                    userRole == 'Authority' ||
-                                    userRole == 'Overall Coordinator') {
+                                if (globalRole == 'Admin' ||
+                                    globalRole == 'Authority' ||
+                                    globalRole == 'OC') {
                                   showDialog(
                                     context: context,
                                     builder: (context) {
@@ -126,6 +164,18 @@ class UserListView extends StatelessWidget {
                                                     fontWeight: FontWeight.w500,
                                                     color: ColorPallete
                                                         .blackColor),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                latestStatus ? 'IN' : 'OUT',
+                                                style: Fonts.popins(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: latestStatus
+                                                      ? Colors.green
+                                                      : ColorPallete.redColor,
+                                                ),
                                               ),
                                             )
                                           ],
@@ -206,24 +256,95 @@ class UserListView extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Flexible(
-                                            child: Text(
-                                              'Name : ${member.fullName}',
-                                              style: Fonts.firasans(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                  color:
-                                                      ColorPallete.blueColor),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: 'Name: ',
+                                                style: Fonts.firasans(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                        ColorPallete.blueColor),
+
+                                                /*defining default style is optional */
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: member.fullName,
+                                                    style: Fonts.firasans(
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: ColorPallete
+                                                            .blackColor),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
+                                            // child: Text(
+                                            //   'Name : ${member.fullName}',
+                                            //   style: Fonts.firasans(
+                                            //       fontSize: 20,
+                                            //       fontWeight:
+                                            //           FontWeight.w500,
+                                            //       color: ColorPallete
+                                            //           .blueColor),
+                                            // ),
                                           ),
                                           Flexible(
-                                            child: Text(
-                                              'Ph : ${member.phoneNumber}',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 17,
-                                                color: Color.fromARGB(
-                                                    211, 0, 0, 0),
-                                              ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                RichText(
+                                                  text: TextSpan(
+                                                    text: 'Ph: ',
+                                                    style: Fonts.firasans(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: ColorPallete
+                                                            .blueColor),
+                                                    children: <TextSpan>[
+                                                      TextSpan(
+                                                        text:
+                                                            member.phoneNumber,
+                                                        style: Fonts.firasans(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: ColorPallete
+                                                                .blackColor),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // Text(
+                                                //   'Ph : ${member.phoneNumber}',
+                                                //   overflow: TextOverflow
+                                                //       .ellipsis,
+                                                //   style: const TextStyle(
+                                                //     fontSize: 17,
+                                                //     color: Color.fromARGB(
+                                                //         211, 0, 0, 0),
+                                                //   ),
+                                                // ),
+                                                Expanded(
+                                                  child: SizedBox(),
+                                                ),
+                                                Text(
+                                                  latestStatus ? 'IN' : 'OUT',
+                                                  style: Fonts.ubuntu(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: latestStatus
+                                                        ? Colors.green
+                                                        : ColorPallete.redColor,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                )
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -237,20 +358,24 @@ class UserListView extends StatelessWidget {
                         );
                       },
                     ),
-                  );
-                } else {
-                  return const Center(child: Text('No users found.'));
-                }
-              },
-            ),
-          );
-        } else {
-          return const Center(child: Text('Unable to determine user role.'));
-        }
-      },
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: Text('No users found.'));
+          }
+        },
+      ),
     );
   }
+  // else {
+  //   return const Center(child: Text('Unable to determine user role.'));
+  // }
+  // },
+  // );
 }
+// }
 
 // class UserListView extends StatelessWidget {
 //   const UserListView({super.key});

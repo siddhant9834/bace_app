@@ -8,14 +8,14 @@ import 'package:mayapur_bace/core/theme/color_pallet.dart';
 
 void showProfileImagePickerOption(BuildContext context) {
   showModalBottomSheet(
-    backgroundColor: ColorPallete.orangeColor,
+    backgroundColor: Colors.white,
     context: context,
     builder: (builder) {
       return Padding(
         padding: const EdgeInsets.all(18.0),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height / 3.8,
+          height: MediaQuery.of(context).size.height / 4.2,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Row(
@@ -68,6 +68,7 @@ void showProfileImagePickerOption(BuildContext context) {
 Future<void> _pickImage(ImageSource source, context) async {
   final pickedFile = await ImagePicker().pickImage(source: source);
   if (pickedFile == null) return;
+  Navigator.pop(context);
 
   await uploadImageToFirestore(File(pickedFile.path), context);
 }
@@ -85,7 +86,7 @@ Future<void> uploadImageToFirestore(File image, BuildContext context) async {
 
     String imageUrl = await ref.getDownloadURL();
     profieDataSource.updateProfileImageUrl(imageUrl);
-log(imageUrl);
+    log(imageUrl);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Image uploaded successfully'),

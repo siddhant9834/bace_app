@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mayapur_bace/core/theme/color_pallet.dart';
+import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -82,10 +84,20 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
             ),
           ),
           if (_dailyWorkStatus[_selectedDay] != null)
-            Padding(
+          Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Task for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ColorPallete.blueColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(6))),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  "Seva for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                  style: Fonts.alata(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
               ),
             ),
         ],

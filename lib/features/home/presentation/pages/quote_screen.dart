@@ -1,10 +1,8 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
-import 'package:mayapur_bace/core/widgets/app_bar.dart';
 import 'package:mayapur_bace/features/home/data/model/quote_model.dart';
 
 class ShowPerticularQuoteScreen extends StatelessWidget {

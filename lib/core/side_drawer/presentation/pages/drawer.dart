@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ import 'package:mayapur_bace/core/widgets/app_bar.dart';
 import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
 import 'package:mayapur_bace/core/side_drawer/data/model/user_profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+String? globalRole="Member";
 class NavigationDrawerCustom extends StatelessWidget {
   final dynamic navigationShell;
   final String appBarTitle;
@@ -196,7 +198,6 @@ class NavigationDrawerCustom extends StatelessWidget {
 }
 
 Widget buildHeader(BuildContext context, User user) {
-  // User? user = FirebaseAuth.instance.currentUser;
   String? email = ProfileService().getEmail();
 
   return Container(
@@ -209,12 +210,15 @@ Widget buildHeader(BuildContext context, User user) {
       future: locator<GetProfileUseCase>().call(email.toString()),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: Text('Users Data'));
+          return Center(child: Text('Loading User Data...'));
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData && snapshot.data != null) {
           final profile = snapshot.data!;
-
+          globalRole=profile.role;
+          bool latestStatus =
+              profile.status.isNotEmpty ? profile.status.last : false;
+          log(latestStatus.toString());
           return Column(
             children: [
               Stack(
@@ -232,7 +236,6 @@ Widget buildHeader(BuildContext context, User user) {
                         height: 100,
                         placeholder: (context, url) =>
                             CircularProgressIndicator(),
-                        // errorWidget: (context, url, error) => Icon(Icons.error),
                         errorWidget: (context, url, error) => Image.asset(
                           'assets/images/default_dp_img.jpg',
                           fit: BoxFit.cover,
@@ -248,6 +251,7 @@ Widget buildHeader(BuildContext context, User user) {
                     child: InkWell(
                       onTap: () {
                         showProfileImagePickerOption(context);
+                        
                       },
                       child: CircleAvatar(
                         radius: 16,
@@ -262,7 +266,6 @@ Widget buildHeader(BuildContext context, User user) {
                 height: 10,
               ),
               Text(
-                // 'HH Srila Prabhupad',
                 profile.fullName,
                 style: Fonts.popins(
                     fontSize: 20,
@@ -270,8 +273,14 @@ Widget buildHeader(BuildContext context, User user) {
                     color: ColorPallete.blackColor),
               ),
               Text(
-                // 'Incharge Designation',
-                '- ${profile.role}',
+                latestStatus ? 'IN' : 'OUT',
+                style: Fonts.popins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: latestStatus ? Colors.green : ColorPallete.redColor),
+              ),
+              Text(
+                '- $globalRole',
                 style: Fonts.popins(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -280,9 +289,121 @@ Widget buildHeader(BuildContext context, User user) {
             ],
           );
         } else {
-          return Text('No data');
+          return Text('No data available');
         }
       },
     ),
   );
 }
+
+
+// Widget buildHeader(BuildContext context, User user) {
+//   // User? user = FirebaseAuth.instance.currentUser;
+//   String? email = ProfileService().getEmail();
+
+//   return Container(
+//     color: ColorPallete.blueColor,
+//     padding: EdgeInsets.only(
+//       top: MediaQuery.of(context).padding.top * 1.5,
+//       bottom: MediaQuery.of(context).padding.top * .30,
+//     ),
+//     child: FutureBuilder<ProfileModel>(
+//       future: locator<GetProfileUseCase>().call(email.toString()),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Center(child: Text('Users Data'));
+//         } else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else if (snapshot.hasData && snapshot.data != null) {
+//           final profile = snapshot.data!;
+
+//           return Column(
+//             children: [
+//               Stack(
+//                 children: [
+//                   Container(
+//                     decoration: BoxDecoration(
+//                       shape: BoxShape.circle,
+//                       color: ColorPallete.liteOffWhiteTextColor,
+//                     ),
+//                     child: ClipOval(
+//                       child: CachedNetworkImage(
+//                         imageUrl: profile.profilePic,
+//                         fit: BoxFit.cover,
+//                         width: 100,
+//                         height: 100,
+//                         placeholder: (context, url) =>
+//                             CircularProgressIndicator(),
+//                         // errorWidget: (context, url, error) => Icon(Icons.error),
+//                         errorWidget: (context, url, error) => Image.asset(
+//                           'assets/images/default_dp_img.jpg',
+//                           fit: BoxFit.cover,
+//                           width: 100,
+//                           height: 100,
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   Positioned(
+//                     right: 0,
+//                     top: 65,
+//                     child: InkWell(
+//                       onTap: () {
+//                         showProfileImagePickerOption(context);
+//                       },
+//                       child: CircleAvatar(
+//                         radius: 16,
+//                         backgroundColor: ColorPallete.greenColor,
+//                         child: SvgPicture.asset('assets/icons/edit_pencil.svg'),
+//                       ),
+//                     ),
+//                   )
+//                 ],
+//               ),
+//               SizedBox(
+//                 height: 10,
+//               ),
+//               Text(
+//                 // 'HH Srila Prabhupad',
+//                 profile.fullName,
+//                 style: Fonts.popins(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.w500,
+//                     color: ColorPallete.blackColor),
+//               ),
+//               profile.status == 'true'
+//                   ? Text(
+//                       // 'HH Srila Prabhupad',
+//                       'IN',
+//                       style: Fonts.popins(
+//                           fontSize: 20,
+//                           fontWeight: FontWeight.w500,
+//                           color: Colors.green),
+//                     )
+//                   : Text(
+//                       // 'HH Srila Prabhupad',
+//                       'OUT',
+//                       style: Fonts.popins(
+//                           fontSize: 20,
+//                           fontWeight: FontWeight.w500,
+//                           color: ColorPallete.redColor),
+//                     ),
+//               Text(
+//                 // 'Incharge Designation',
+//                 '- ${profile.role}',
+//                 style: Fonts.popins(
+//                     fontSize: 15,
+//                     fontWeight: FontWeight.w500,
+//                     color: ColorPallete.blackColor),
+//               ),
+//             ],
+//           );
+//         } else {
+//           return Text('No data');
+//         }
+//       },
+//     ),
+//   );
+// }
+
+

@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:mayapur_bace/core/theme/color_pallet.dart';
+import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,14 +15,14 @@ class DailySevaScreen extends StatefulWidget {
 
 class _DailyWorkScreenState extends State<DailySevaScreen> {
   DateTime _selectedDay = DateTime.now();
-  Map<DateTime, String> _dailyWorkStatus = {}; 
+  Map<DateTime, String> _dailyWorkStatus = {};
   String? userEmail;
   String? sevaAssigned;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserEmail(); 
+    _fetchUserEmail();
   }
 
   Future<void> _fetchUserEmail() async {
@@ -29,10 +31,9 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
       setState(() {
         userEmail = user.email;
       });
-      _fetchDailyWorkStatus(); 
+      _fetchDailyWorkStatus();
     }
   }
-
 
   void _fetchDailyWorkStatus() {
     if (userEmail != null) {
@@ -77,7 +78,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
               setState(() {
                 _selectedDay = selectedDay;
               });
-              _showTaskDialog(); 
+              _showTaskDialog();
             },
             calendarBuilders: CalendarBuilders(
               defaultBuilder: (context, day, focusedDay) {
@@ -106,8 +107,18 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
           if (_dailyWorkStatus[_selectedDay] != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                "Task for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+              child: Container(
+                decoration: BoxDecoration(
+                    color: ColorPallete.blueColor,
+                    borderRadius: BorderRadius.all(Radius.circular(6))),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  "Seva for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                  style: Fonts.alata(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
               ),
             ),
         ],
@@ -120,7 +131,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Mark task for ${_selectedDay.toLocal()}"),
+          title: Text("Seva for ${_selectedDay.toLocal()}"),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -129,7 +140,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                   onPressed: () {
                     _updateTaskStatus("✔ Completed");
                     Future.delayed(Duration(milliseconds: 700), () {
-                      Navigator.pop(context); 
+                      Navigator.pop(context);
                     });
                   }),
               IconButton(
@@ -137,7 +148,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                   onPressed: () {
                     _updateTaskStatus("✘ Not Completed");
                     Future.delayed(Duration(milliseconds: 700), () {
-                      Navigator.pop(context); 
+                      Navigator.pop(context);
                     });
                   }),
             ],
@@ -155,10 +166,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
     if (userEmail != null) {
       log(userEmail.toString());
 
-      FirebaseFirestore.instance
-          .collection("seva_calendar")
-          .doc(userEmail)
-          .set(
+      FirebaseFirestore.instance.collection("seva_calendar").doc(userEmail).set(
         {
           _selectedDay.toIso8601String(): {"status": status},
         },

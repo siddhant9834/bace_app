@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';

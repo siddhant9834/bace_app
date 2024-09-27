@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mayapur_bace/core/side_drawer/presentation/pages/drawer.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
-import 'package:mayapur_bace/core/widgets/app_bar.dart';
-import 'package:mayapur_bace/features/photos/presentation/pages/photos_page.dart';
 import 'package:mayapur_bace/features/photos/presentation/widgets/upload_photos_sheet.dart';
 
 class PhotosCategory extends StatelessWidget {

@@ -6,6 +6,8 @@ class MembersEntity {
   final String phoneNumber;
   final String role;
   final String profilePic;
+    final List<bool> status;
+
 
   const MembersEntity({
     // required this.userId,
@@ -15,5 +17,7 @@ class MembersEntity {
     required this.phoneNumber,
     required this.role,
     required this.profilePic,
+        required this.status,
+
   });
 }
