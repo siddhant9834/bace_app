@@ -10,3 +10,5 @@ class PhotosButtonClickedEvent extends DrawerEvent{}
 class CalendarButtonClickedEvent extends DrawerEvent{}
 class MembersButtonClickedEvent extends DrawerEvent{}
 class SevaListButtonClickedEvent extends DrawerEvent{}
+
+class MorningProgramButtonClickedEvent extends DrawerEvent{}

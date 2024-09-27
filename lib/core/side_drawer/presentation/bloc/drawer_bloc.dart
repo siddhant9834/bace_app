@@ -15,6 +15,8 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     on<MembersButtonClickedEvent>(membersButtonClickedEvent);
 
     on<SevaListButtonClickedEvent>(sevaListButtonClickedEvent);
+        on<MorningProgramButtonClickedEvent>(morningProgramButtonClickedEvent);
+
   }
 
   FutureOr<void> homeButtonClickedEvent(
@@ -45,5 +47,9 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
   FutureOr<void> sevaListButtonClickedEvent(
       SevaListButtonClickedEvent event, Emitter<DrawerState> emit) {
     emit(SevaListButtonClickedState());
+  }
+
+  FutureOr<void> morningProgramButtonClickedEvent(MorningProgramButtonClickedEvent event, Emitter<DrawerState> emit) {
+    emit(MorningProgramButtonClickedState());
   }
 }

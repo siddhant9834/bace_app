@@ -17,7 +17,9 @@ import 'package:mayapur_bace/core/widgets/app_bar.dart';
 import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
 import 'package:mayapur_bace/core/side_drawer/data/model/user_profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-String? globalRole="Member";
+
+String? globalRole = "Member";
+
 class NavigationDrawerCustom extends StatelessWidget {
   final dynamic navigationShell;
   final String appBarTitle;
@@ -73,6 +75,9 @@ class NavigationDrawerCustom extends StatelessWidget {
               context.pushReplacement('/seva', extra: "Seva Chart");
             } else if (state is SevaListButtonClickedState) {
               context.pushReplacement('/seva_list', extra: "Seva List");
+            } else if (state is MorningProgramButtonClickedState) {
+              context.pushReplacement('/morning_program',
+                  extra: "Morning Program");
             }
           },
           child: SingleChildScrollView(
@@ -167,6 +172,21 @@ class NavigationDrawerCustom extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
+        ListTile(
+          leading: Icon(Icons.people_sharp),
+          title: Text(
+            'Morning Program',
+            style: Fonts.ubuntu(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+                color: ColorPallete.blackColor),
+          ),
+          onTap: () {
+            BlocProvider.of<DrawerBloc>(context)
+                .add(MorningProgramButtonClickedEvent());
+            Navigator.of(context).pop();
+          },
+        ),
         SizedBox(
           height: 300,
         ),
@@ -215,7 +235,7 @@ Widget buildHeader(BuildContext context, User user) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData && snapshot.data != null) {
           final profile = snapshot.data!;
-          globalRole=profile.role;
+          globalRole = profile.role;
           bool latestStatus =
               profile.status.isNotEmpty ? profile.status.last : false;
           log(latestStatus.toString());
@@ -251,7 +271,6 @@ Widget buildHeader(BuildContext context, User user) {
                     child: InkWell(
                       onTap: () {
                         showProfileImagePickerOption(context);
-                        
                       },
                       child: CircleAvatar(
                         radius: 16,
@@ -272,12 +291,81 @@ Widget buildHeader(BuildContext context, User user) {
                     fontWeight: FontWeight.w500,
                     color: ColorPallete.blackColor),
               ),
-              Text(
-                latestStatus ? 'IN' : 'OUT',
-                style: Fonts.popins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: latestStatus ? Colors.green : ColorPallete.redColor),
+              Padding(
+                padding: const EdgeInsets.only(left: 43),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: ColorPallete.greyColor,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Text(
+                        latestStatus ? 'IN' : 'OUT',
+                        style: Fonts.popins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: latestStatus
+                                ? Colors.green
+                                : ColorPallete.redColor),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onDoubleTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                actionsAlignment: MainAxisAlignment.center,
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Edit'), // Dialog title
+                                    IconButton(
+                                      icon: Icon(Icons.close),
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(); // Close the dialog
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      decoration: InputDecoration(
+                                        labelText: 'Enter Reason for Out',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Action for the button
+                                      Navigator.of(context)
+                                          .pop(); // Closes the dialog
+                                    },
+                                    child: Text('Submit'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Icon(
+                        Icons.edit,
+                        size: 25.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Text(
                 '- $globalRole',

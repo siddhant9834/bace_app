@@ -8,6 +8,7 @@ import 'package:mayapur_bace/features/authentication/presentation/pages/registra
 import 'package:mayapur_bace/features/home/presentation/pages/home_screen.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/quote_screen.dart';
 import 'package:mayapur_bace/features/members/presentation/pages/members_list_view.dart';
+import 'package:mayapur_bace/features/morning_program/presentation/pages/morning_aarti.dart';
 import 'package:mayapur_bace/features/photos/presentation/pages/photos_category.dart';
 import 'package:mayapur_bace/features/photos/presentation/pages/photos_page.dart';
 import 'package:mayapur_bace/features/seva/presentation/pages/seva_details_calendar.dart';
@@ -24,6 +25,7 @@ final onboardingTabNavigatorKey = GlobalKey<NavigatorState>();
 final membersTabNavigatorKey = GlobalKey<NavigatorState>();
 final sevaNavigationKey = GlobalKey<NavigatorState>();
 final sevaListNavigatorKey = GlobalKey<NavigatorState>();
+final morningProgramTabNavigatorKey = GlobalKey<NavigatorState>();
 
 const String KEYLOGIN = 'Login';
 
@@ -193,6 +195,18 @@ final GoRouter router = GoRouter(
                   return MaterialPage(
                     key: state.pageKey,
                     child: UserListView(),
+                  );
+                },
+              )
+            ]),
+            StatefulShellBranch(navigatorKey: morningProgramTabNavigatorKey, routes: [
+              GoRoute(
+                path: '/morning_program',
+                name: MyAppRouteConstants.morningProgramScreen,
+                pageBuilder: (context, state) {
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: MorningAarti(),
                   );
                 },
               )
