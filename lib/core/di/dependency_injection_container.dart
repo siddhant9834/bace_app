@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mayapur_bace/core/side_drawer/data/datasource/FB_services.dart';
 import 'package:mayapur_bace/core/side_drawer/data/repositories/profile_repo_impl.dart';
 import 'package:mayapur_bace/core/side_drawer/domain/repositories/user_repo.dart';
+import 'package:mayapur_bace/core/side_drawer/domain/usecases/update_status_usecases.dart';
 import 'package:mayapur_bace/features/authentication/data/FireB_auth_impl_datasource.dart/firebase_auth_services_impl.dart';
 import 'package:mayapur_bace/features/authentication/data/repositories/auth_repo_impl.dart';
 import 'package:mayapur_bace/features/authentication/domain/repositories/auth_repositories.dart';
@@ -64,8 +65,24 @@ void setUp() {
       
   locator.registerSingleton<GetSevaListUseCase>(
     GetSevaListUseCase(locator<SevaListRepositories>()),
-  );
-// //  locator.registerSingleton<ProfileReposotories>(
-//   ProfileRepositoryImpl(locator<ProfileService>()),
+    
+
+ 
+
+  // locator.registerLazySingleton<UpdateStatusUsecas
+  // es>(
+
+
+  // () => UpdateStatusUsecases(locator<UpdateStatusRepo>()),
+);
+locator.registerLazySingleton<UpdateStatusUsecases>(
+  () => UpdateStatusUsecases(locator<ProfileReposotories>()),
+);
+
+locator.registerLazySingleton<UpdateSevaUsecases>(
+  () => UpdateSevaUsecases(locator<SevaListRepositories>()),
+);
+
+ 
 }
 

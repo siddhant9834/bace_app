@@ -86,19 +86,17 @@ class AuthService {
     }
   }
 
-  Future<void> updateProfileBio(String newBio) async {
-    try {
-      DocumentReference profileRef = _firestore
-          .collection('registered_users')
-          .doc('73x5M7xbusc6I3IlKx0CeANrhdc2');
-      print('intupdate*********');
-      print(newBio);
-      await profileRef.update({'bio': newBio});
-    } catch (e) {
-      print('Error updating bio: $e');
-      throw e;
-    }
-  }
+  // Future<void> updateStatus(bool status) async {
+  //   try {
+  //     DocumentReference profileRef = _firestore
+  //         .collection('users')
+  //         .doc('73x5M7xbusc6I3IlKx0CeANrhdc2');
+  //     await profileRef.update({'status': status});
+  //   } catch (e) {
+  //     print('Facing Problem while updating status, try again after some time: $e');
+  //     throw e;
+  //   }
+  // }
 
   // Future<void> updateProfileUrl(String imageUrl) async {
   //   try {

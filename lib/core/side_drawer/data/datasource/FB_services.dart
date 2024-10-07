@@ -9,7 +9,6 @@ class ProfileService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  
   User? getCurrentUser() {
     return _auth.currentUser;
   }
@@ -26,7 +25,7 @@ class ProfileService {
       QuerySnapshot querySnapshot = await _firestore
           .collection('users')
           .where('email', isEqualTo: userEmail)
-           .get();
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return ProfileModel.fromMap(
@@ -87,4 +86,74 @@ class ProfileService {
       throw e;
     }
   }
+  
+
+  // Future<void> updateStatus(bool status) async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await _firestore
+  //         .collection('users')
+  //         .where('email', isEqualTo: getEmail())
+  //         .get();
+
+  //     log('Status update service called for user: ${getEmail()}');
+
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+  //         Map<bool, Timestamp> currentStatus = doc['status'] ?? [];
+  //         // log(currentStatus.last.toString());
+  //          Map<String, dynamic> newStatus = {
+  //         'status': status,
+  //         'timestamp': FieldValue.serverTimestamp()
+  //       };
+  //         currentStatus.add(newStatus);
+
+  //         await doc.reference.update({
+  //           'status': currentStatus,
+  //         });
+
+  //         log('Status updated successfully with timestamp for document: ${doc.id}');
+  //       }
+  //     } else {
+  //       log('No user found with this email.');
+  //       throw Exception('User not found.');
+  //     }
+  //   } catch (e) {
+  //     log('Error updating status: $e');
+  //     throw 'Facing problem while updating IN/OUT status, try again after some time';
+  //   }
+  // }
+Future<void> updateStatus(bool status) async {
+   try {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: getEmail())
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentReference profileRef = querySnapshot.docs.first.reference;
+
+      await profileRef.set({
+        'status': FieldValue.arrayUnion([status]) 
+      }, SetOptions(merge: true)); 
+    } else {
+      print('No user found with the provided email.');
+    }
+  } catch (e) {
+    print('Facing problem while adding IN/OUT status, try again after some time');
+    throw e;
+  }
+}
+
+  //   Future<void> updateStatus(bool status) async {
+  //   try {
+  //     DocumentReference profileRef = _firestore
+  //         .collection('users')
+  //              .where('email', isEqualTo: userEmail)
+  //          .get();
+  //     await profileRef.update({'status': status});
+  //   } catch (e) {
+  //     print('Facing Problem while updating IN/OUT status, try again after some time');
+  //     throw e;
+  //   }
+  // }
 }

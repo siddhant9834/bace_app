@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mayapur_bace/core/side_drawer/domain/entity/entity_model.dart';
 
 class ProfileModel extends ProfileEntity {
@@ -18,8 +19,8 @@ class ProfileModel extends ProfileEntity {
       fullName: data['fullName']?.toString() ?? '',
       phoneNumber: data['phoneNumber']?.toString() ?? '',
       role: data['role']?.toString() ?? '',
-            // status: data['status'],
-status: List<bool>.from(data['status'] as List<dynamic>),
+      // status: data['status'],
+      status: List<bool>.from(data['status']),
 
       profilePic: data['profilePic'].toString() ?? '',
     );

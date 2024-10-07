@@ -13,3 +13,14 @@ class GetSevaListUseCase {
   }
 
 }
+
+class UpdateSevaUsecases {
+  final SevaListRepositories repository;
+
+  UpdateSevaUsecases(this.repository);
+
+  Future<void> callUpdateSeva(String newSeva, String userEmail) {
+
+    return repository.updateSeva(newSeva, userEmail);
+  }
+}

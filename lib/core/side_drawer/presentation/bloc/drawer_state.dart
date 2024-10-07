@@ -15,3 +15,4 @@ class CalendarButtonClickedState extends DrawerState{}
 class MembersButtonClickedState extends DrawerState{}
 class SevaListButtonClickedState extends DrawerState{}
 class MorningProgramButtonClickedState extends DrawerState{}
+class StatusButtonClickedState extends DrawerState{}

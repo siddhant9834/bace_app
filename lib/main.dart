@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mayapur_bace/core/side_drawer/presentation/bloc/drawer_bloc.dart';
 import 'package:mayapur_bace/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:mayapur_bace/features/seva/presentation/bloc/seva_bloc.dart';
 
 
 void main() async {
@@ -36,7 +37,9 @@ class MyApp extends StatelessWidget {
          BlocProvider<AuthBloc>(
           create: (context) => AuthBloc(),
         ),
-     
+      BlocProvider<SevaBloc>(
+          create: (context) => SevaBloc(),
+        ),
      
       ],
       child: MaterialApp.router(

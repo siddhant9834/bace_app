@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mayapur_bace/core/side_drawer/domain/entity/entity_model.dart';
 import 'package:mayapur_bace/features/members/domain/entity/members_entity.dart';
 
@@ -21,7 +22,7 @@ class MembersModel extends ProfileEntity {
       phoneNumber: data['phoneNumber'] as String,
       role: data['role'] as String,
       // status: (data['status'] as List).map((e) => e as bool).toList(),
-      status: List<bool>.from(data['status'] as List<dynamic>),
+      status: List<bool>.from(data['status'] as  List<dynamic>),
 
       profilePic: data['profilePic'] as String,
     );

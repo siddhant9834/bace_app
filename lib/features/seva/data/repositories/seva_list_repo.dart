@@ -15,4 +15,9 @@ class SevaListRepositoryImpl implements SevaListRepositories {
   }
 
 
+  @override
+  Future<void> updateSeva(String newSeva, String userEmail) {
+    return datasource.updateSeva(newSeva, userEmail);
+  }
+
 }

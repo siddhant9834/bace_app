@@ -12,3 +12,8 @@ class MembersButtonClickedEvent extends DrawerEvent{}
 class SevaListButtonClickedEvent extends DrawerEvent{}
 
 class MorningProgramButtonClickedEvent extends DrawerEvent{}
+class StatusButtonClickedEevent extends DrawerEvent{
+  final bool status;
+
+  StatusButtonClickedEevent({required this.status});
+}

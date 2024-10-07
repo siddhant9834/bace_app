@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
+import 'package:mayapur_bace/core/side_drawer/domain/usecases/update_status_usecases.dart';
 import 'package:meta/meta.dart';
 
 part 'drawer_event.dart';
@@ -16,7 +19,7 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
 
     on<SevaListButtonClickedEvent>(sevaListButtonClickedEvent);
         on<MorningProgramButtonClickedEvent>(morningProgramButtonClickedEvent);
-
+    on<StatusButtonClickedEevent>(statusButtonClickedEevent);
   }
 
   FutureOr<void> homeButtonClickedEvent(
@@ -51,5 +54,13 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
 
   FutureOr<void> morningProgramButtonClickedEvent(MorningProgramButtonClickedEvent event, Emitter<DrawerState> emit) {
     emit(MorningProgramButtonClickedState());
+  }
+
+  FutureOr<void> statusButtonClickedEevent(StatusButtonClickedEevent event, Emitter<DrawerState> emit) async{
+                                                    log('bloc  clicked');
+
+    await locator<UpdateStatusUsecases>().callStatus(event.status);
+
+    
   }
 }

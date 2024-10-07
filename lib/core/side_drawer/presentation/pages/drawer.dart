@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,10 +27,10 @@ class NavigationDrawerCustom extends StatelessWidget {
 
   const NavigationDrawerCustom(
       {super.key, this.navigationShell, required this.appBarTitle});
-
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+//  bool latestStatus;
 
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -37,31 +38,7 @@ class NavigationDrawerCustom extends StatelessWidget {
       body: navigationShell,
       appBar:
           ApplicationToolbar(title: appBarTitle, color: ColorPallete.pinkColor),
-      drawer:
-
-          // switch (state.runtimeType) {
-          //   case HomeButtonClickedState:
-          //     final homeState = state as HomeButtonClickedState;
-
-          //     context.go('/home');
-          //     break;
-          //   case PhotosButtonClickedState:
-          //     final photoState = state as PhotosButtonClickedState;
-          //     context.go('/photos');
-          //     break;
-          //   case SevaButtonClickedState:
-          //     final sevaState = state as SevaButtonClickedState;
-          //     context.go('/seva');
-          //     break;
-          //   case CalendarButtonClickedState:
-          //     final CalendarState = state as CalendarButtonClickedState;
-          //     context.go('/calendar');
-          //     break;
-          //   // default:
-          //   //   break;
-          // }
-
-          Drawer(
+      drawer: Drawer(
         width: screenWidth * .8,
         child: BlocListener<DrawerBloc, DrawerState>(
           listener: (context, state) {
@@ -79,6 +56,7 @@ class NavigationDrawerCustom extends StatelessWidget {
               context.pushReplacement('/morning_program',
                   extra: "Morning Program");
             }
+       
           },
           child: SingleChildScrollView(
             child: Column(
@@ -160,7 +138,7 @@ class NavigationDrawerCustom extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.people_sharp),
           title: Text(
-            'Members of Bace',
+            'Members of BACE',
             style: Fonts.ubuntu(
                 fontSize: 20,
                 fontWeight: FontWeight.w400,
@@ -236,8 +214,9 @@ Widget buildHeader(BuildContext context, User user) {
         } else if (snapshot.hasData && snapshot.data != null) {
           final profile = snapshot.data!;
           globalRole = profile.role;
-          bool latestStatus =
-              profile.status.isNotEmpty ? profile.status.last : false;
+              List<dynamic>statusList=profile.status;
+              bool latestStatus=statusList.last;
+         
           log(latestStatus.toString());
           return Column(
             children: [
@@ -316,18 +295,23 @@ Widget buildHeader(BuildContext context, User user) {
                     ),
                     InkWell(
                       onDoubleTap: () {
+
+
+
                         showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
+                                contentPadding: EdgeInsets.all(20),
+                                backgroundColor: ColorPallete.whiteColor,
                                 actionsAlignment: MainAxisAlignment.center,
                                 title: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Edit'), // Dialog title
+                                    const Text('Edit'), // Dialog title
                                     IconButton(
-                                      icon: Icon(Icons.close),
+                                      icon: const Icon(Icons.close),
                                       onPressed: () {
                                         Navigator.of(context)
                                             .pop(); // Close the dialog
@@ -338,27 +322,71 @@ Widget buildHeader(BuildContext context, User user) {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    TextField(
-                                      decoration: InputDecoration(
-                                        labelText: 'Enter Reason for Out',
-                                      ),
-                                    ),
+                                    latestStatus ? 
+                                       Text(
+                                            'Want to get out...???',
+                                            style: Fonts.nunitoSans(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black),
+                                          ):
+                                        // ? TextField(
+                                        //     decoration: InputDecoration(
+                                        //       focusColor:
+                                        //           ColorPallete.orangeColor,
+                                        //       border: OutlineInputBorder(
+                                        //           borderSide: BorderSide(
+                                        //               color: ColorPallete
+                                        //                   .whiteColor)),
+                                        //       labelStyle: Fonts.popins(
+                                        //           fontSize: 20,
+                                        //           fontWeight: FontWeight.w400,
+                                        //           color: Colors.black),
+                                        //       labelText: 'Enter Reason for Out',
+                                        //     ),
+                                        //   )
+                                        // : 
+                                        Text(
+                                            'Want to getin...???',
+                                            style: Fonts.nunitoSans(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black),
+                                          ),
                                   ],
                                 ),
                                 actions: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // Action for the button
-                                      Navigator.of(context)
-                                          .pop(); // Closes the dialog
-                                    },
-                                    child: Text('Submit'),
+                                  SizedBox(
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.all(10),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 65, 135, 240),
+                                      ),
+                                      onPressed: () {
+                                        BlocProvider.of<DrawerBloc>(context)
+                                            .add(StatusButtonClickedEevent(status: latestStatus ? false : true));
+                                            log('status event clicked');
+                                            
+                                            Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        latestStatus ? 'Confirm OUT' : 'IN',
+                                        style: Fonts.ubuntu(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            color: ColorPallete.redColor),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               );
                             });
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.edit,
                         size: 25.0,
                         color: Colors.black,
@@ -377,121 +405,10 @@ Widget buildHeader(BuildContext context, User user) {
             ],
           );
         } else {
-          return Text('No data available');
+          return const Text('No data available');
         }
       },
     ),
   );
 }
-
-
-// Widget buildHeader(BuildContext context, User user) {
-//   // User? user = FirebaseAuth.instance.currentUser;
-//   String? email = ProfileService().getEmail();
-
-//   return Container(
-//     color: ColorPallete.blueColor,
-//     padding: EdgeInsets.only(
-//       top: MediaQuery.of(context).padding.top * 1.5,
-//       bottom: MediaQuery.of(context).padding.top * .30,
-//     ),
-//     child: FutureBuilder<ProfileModel>(
-//       future: locator<GetProfileUseCase>().call(email.toString()),
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return Center(child: Text('Users Data'));
-//         } else if (snapshot.hasError) {
-//           return Text('Error: ${snapshot.error}');
-//         } else if (snapshot.hasData && snapshot.data != null) {
-//           final profile = snapshot.data!;
-
-//           return Column(
-//             children: [
-//               Stack(
-//                 children: [
-//                   Container(
-//                     decoration: BoxDecoration(
-//                       shape: BoxShape.circle,
-//                       color: ColorPallete.liteOffWhiteTextColor,
-//                     ),
-//                     child: ClipOval(
-//                       child: CachedNetworkImage(
-//                         imageUrl: profile.profilePic,
-//                         fit: BoxFit.cover,
-//                         width: 100,
-//                         height: 100,
-//                         placeholder: (context, url) =>
-//                             CircularProgressIndicator(),
-//                         // errorWidget: (context, url, error) => Icon(Icons.error),
-//                         errorWidget: (context, url, error) => Image.asset(
-//                           'assets/images/default_dp_img.jpg',
-//                           fit: BoxFit.cover,
-//                           width: 100,
-//                           height: 100,
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                   Positioned(
-//                     right: 0,
-//                     top: 65,
-//                     child: InkWell(
-//                       onTap: () {
-//                         showProfileImagePickerOption(context);
-//                       },
-//                       child: CircleAvatar(
-//                         radius: 16,
-//                         backgroundColor: ColorPallete.greenColor,
-//                         child: SvgPicture.asset('assets/icons/edit_pencil.svg'),
-//                       ),
-//                     ),
-//                   )
-//                 ],
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               Text(
-//                 // 'HH Srila Prabhupad',
-//                 profile.fullName,
-//                 style: Fonts.popins(
-//                     fontSize: 20,
-//                     fontWeight: FontWeight.w500,
-//                     color: ColorPallete.blackColor),
-//               ),
-//               profile.status == 'true'
-//                   ? Text(
-//                       // 'HH Srila Prabhupad',
-//                       'IN',
-//                       style: Fonts.popins(
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.w500,
-//                           color: Colors.green),
-//                     )
-//                   : Text(
-//                       // 'HH Srila Prabhupad',
-//                       'OUT',
-//                       style: Fonts.popins(
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.w500,
-//                           color: ColorPallete.redColor),
-//                     ),
-//               Text(
-//                 // 'Incharge Designation',
-//                 '- ${profile.role}',
-//                 style: Fonts.popins(
-//                     fontSize: 15,
-//                     fontWeight: FontWeight.w500,
-//                     color: ColorPallete.blackColor),
-//               ),
-//             ],
-//           );
-//         } else {
-//           return Text('No data');
-//         }
-//       },
-//     ),
-//   );
-// }
-
 

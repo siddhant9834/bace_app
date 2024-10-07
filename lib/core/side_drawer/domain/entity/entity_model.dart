@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProfileEntity {
   // final String userId;
   // final String uid;
@@ -7,6 +9,7 @@ class ProfileEntity {
   final String role;
   final String profilePic;
   final List<bool> status;
+  // final Map<bool, Timestamp> status;
 
   const ProfileEntity({
     // required this.userId,
