@@ -56,7 +56,6 @@ class NavigationDrawerCustom extends StatelessWidget {
               context.pushReplacement('/morning_program',
                   extra: "Morning Program");
             }
-       
           },
           child: SingleChildScrollView(
             child: Column(
@@ -201,6 +200,8 @@ Widget buildHeader(BuildContext context, User user) {
   return Container(
     color: ColorPallete.blueColor,
     padding: EdgeInsets.only(
+      left: 18,
+      right: 18,
       top: MediaQuery.of(context).padding.top * 1.5,
       bottom: MediaQuery.of(context).padding.top * .30,
     ),
@@ -214,9 +215,9 @@ Widget buildHeader(BuildContext context, User user) {
         } else if (snapshot.hasData && snapshot.data != null) {
           final profile = snapshot.data!;
           globalRole = profile.role;
-              List<dynamic>statusList=profile.status;
-              bool latestStatus=statusList.last;
-         
+          List<dynamic> statusList = profile.status;
+          bool latestStatus = statusList.last;
+
           log(latestStatus.toString());
           return Column(
             children: [
@@ -264,6 +265,7 @@ Widget buildHeader(BuildContext context, User user) {
                 height: 10,
               ),
               Text(
+                overflow: TextOverflow.ellipsis,
                 profile.fullName,
                 style: Fonts.popins(
                     fontSize: 20,
@@ -271,20 +273,20 @@ Widget buildHeader(BuildContext context, User user) {
                     color: ColorPallete.blackColor),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 43),
+                padding: const EdgeInsets.only(left: 43, top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                          color: ColorPallete.greyColor,
+                          color: ColorPallete.offWhiteListTileColor,
                           borderRadius: BorderRadius.circular(5)),
                       child: Text(
                         latestStatus ? 'IN' : 'OUT',
                         style: Fonts.popins(
                             fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: latestStatus
                                 ? Colors.green
                                 : ColorPallete.redColor),
@@ -294,10 +296,7 @@ Widget buildHeader(BuildContext context, User user) {
                       width: 10,
                     ),
                     InkWell(
-                      onDoubleTap: () {
-
-
-
+                      onTap: () {
                         showDialog(
                             context: context,
                             builder: (context) {
@@ -311,7 +310,10 @@ Widget buildHeader(BuildContext context, User user) {
                                   children: [
                                     const Text('Edit'), // Dialog title
                                     IconButton(
-                                      icon: const Icon(Icons.close),
+                                      icon: const Icon(
+                                        Icons.close,
+                                        size: 25,
+                                      ),
                                       onPressed: () {
                                         Navigator.of(context)
                                             .pop(); // Close the dialog
@@ -322,14 +324,15 @@ Widget buildHeader(BuildContext context, User user) {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    latestStatus ? 
-                                       Text(
+                                    latestStatus
+                                        ? Text(
                                             'Want to get out...???',
                                             style: Fonts.nunitoSans(
                                                 fontSize: 25,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.black),
-                                          ):
+                                          )
+                                        :
                                         // ? TextField(
                                         //     decoration: InputDecoration(
                                         //       focusColor:
@@ -345,7 +348,7 @@ Widget buildHeader(BuildContext context, User user) {
                                         //       labelText: 'Enter Reason for Out',
                                         //     ),
                                         //   )
-                                        // : 
+                                        // :
                                         Text(
                                             'Want to getin...???',
                                             style: Fonts.nunitoSans(
@@ -367,11 +370,17 @@ Widget buildHeader(BuildContext context, User user) {
                                             255, 65, 135, 240),
                                       ),
                                       onPressed: () {
-                                        BlocProvider.of<DrawerBloc>(context)
-                                            .add(StatusButtonClickedEevent(status: latestStatus ? false : true));
-                                            log('status event clicked');
-                                            
-                                            Navigator.pop(context);
+                                        if (latestStatus == false) {
+                                          BlocProvider.of<DrawerBloc>(context)
+                                              .add(StatusButtonClickedEevent(
+                                                  status: true));
+                                        } else {
+                                          BlocProvider.of<DrawerBloc>(context)
+                                              .add(StatusButtonClickedEevent(
+                                                  status: false));
+                                          log('status event clicked');
+                                        }
+                                        Navigator.pop(context);
                                       },
                                       child: Text(
                                         latestStatus ? 'Confirm OUT' : 'IN',
@@ -387,20 +396,23 @@ Widget buildHeader(BuildContext context, User user) {
                             });
                       },
                       child: const Icon(
-                        Icons.edit,
-                        size: 25.0,
+                        Icons.edit_rounded,
+                        size: 22.0,
                         color: Colors.black,
                       ),
                     ),
                   ],
                 ),
               ),
-              Text(
-                '- $globalRole',
-                style: Fonts.popins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: ColorPallete.blackColor),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  '- $globalRole',
+                  style: Fonts.popins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: ColorPallete.blackColor),
+                ),
               ),
             ],
           );
@@ -411,4 +423,3 @@ Widget buildHeader(BuildContext context, User user) {
     ),
   );
 }
-

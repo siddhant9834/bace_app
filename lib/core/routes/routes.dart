@@ -159,33 +159,86 @@ final GoRouter router = GoRouter(
                 },
               )
             ]),
-               StatefulShellBranch(navigatorKey: sevaListNavigatorKey, routes: [
+            StatefulShellBranch(navigatorKey: sevaListNavigatorKey, routes: [
               GoRoute(
-                path: '/seva_list',
-                name: MyAppRouteConstants.sevaListScreen,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    key: state.pageKey,
-                    child: SevaListScreen(),
-                  );
-                },
-                routes: [
-                       GoRoute(
-                        path: 'seva_details_screen',
-                        name: MyAppRouteConstants.sevaDetailsScreen,
-                        pageBuilder: (context, state) {
-                          final inputEmail = state.extra as String;
-                          // final selectedCategory = state.pathParameters['categoryId'] ?? ''; this line created very big chaos in project developement i am not removing this line because by this rememberance we can avoid such bugs
+                  path: '/seva_list',
+                  name: MyAppRouteConstants.sevaListScreen,
+                  pageBuilder: (context, state) {
+                    return MaterialPage(
+                      key: state.pageKey,
+                      child: SevaListScreen(),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'seva_details_screen/:inputEmail/:seva/:fullName',
+                      name: MyAppRouteConstants.sevaDetailsScreen,
 
-                          return MaterialPage(
-                            key: state.pageKey,
-                            child:
-                                SevaDetailsScreen(inputEmail: inputEmail),
-                          );
-                          //  selectDate(context);
-                        })
-                ]
-              )
+                      // Access the Map directly from state.extra
+                      // final data = state.extra as Map<String, dynamic>;
+                      // final args = state.extra as SevaDetailsArguments;
+                      // final inputEmail = state.extra as String;
+                      builder: (context, state) {
+                        return SevaDetailsScreen(
+                            inputEmail:
+                                state.pathParameters['inputEmail'] as String,
+                            seva: state.pathParameters['seva'] as String,
+                            fullName:
+                                state.pathParameters['fullName'] as String);
+                      },
+                      // final List data = state.extra as List;
+                      // final inputEmail = data[0];
+                      // final seva = data[1];
+                      // final fullName = data[2];
+
+                      // return MaterialPage(
+                      //   key: state.pageKey,
+                      //   child: SevaDetailsScreen(
+                      //     inputEmail: inputEmail,
+                      //     seva: seva,
+                      //     fullName: fullName, // Pass the email to the screen
+                      //   ),
+                      // );
+
+                      // Extract the values from the map
+                      // final inputEmail = data['inputEmail'] as String;
+                      // // final seva = data['seva'] as String;
+                      // // final fullName = data['fullName'] as String;
+
+                      // return MaterialPage(
+                      //   key: state.pageKey,
+                      //   child: SevaDetailsScreen(
+                      //     inputEmail: args.inputEmail,
+                      //     seva: args.seva,
+                      //     fullName: args.fullName,
+                      //   ),
+                      // );
+                    ),
+                    // GoRoute(
+                    //     path: 'seva_details_screen',
+                    //     name: MyAppRouteConstants.sevaDetailsScreen,
+                    //     pageBuilder: (context, state) {
+                    //       final inputEmail = state.extra as String;
+                    //       // final selectedCategory = state.pathParameters['categoryId'] ?? ''; this line created very big chaos in project developement i am not removing this line because by this rememberance we can avoid such bugs
+                    //       (context, state) {
+                    //         final data = state.extra as Map<String, dynamic>;
+                    //         final seva = data['seva'];
+                    //         final fullName = data['fullName'];
+
+                    //         return SevaDetailsScreen(
+                    //             inputEmail: inputEmail,
+                    //             seva: seva,
+                    //             fullName: fullName);
+                    //       };
+                    //       // return MaterialPage(
+                    //       //   key: state.pageKey,
+                    //       //   child:
+                    //       //       SevaDetailsScreen(inputEmail: inputEmail),
+                    //       // );
+                    //       //  selectDate(context);
+                    //     }
+                    //   )
+                  ])
             ]),
             StatefulShellBranch(navigatorKey: membersTabNavigatorKey, routes: [
               GoRoute(
@@ -199,18 +252,19 @@ final GoRouter router = GoRouter(
                 },
               )
             ]),
-            StatefulShellBranch(navigatorKey: morningProgramTabNavigatorKey, routes: [
-              GoRoute(
-                path: '/morning_program',
-                name: MyAppRouteConstants.morningProgramScreen,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    key: state.pageKey,
-                    child: MorningAarti(),
-                  );
-                },
-              )
-            ]),
-    
+            StatefulShellBranch(
+                navigatorKey: morningProgramTabNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: '/morning_program',
+                    name: MyAppRouteConstants.morningProgramScreen,
+                    pageBuilder: (context, state) {
+                      return MaterialPage(
+                        key: state.pageKey,
+                        child: MorningAarti(),
+                      );
+                    },
+                  )
+                ]),
           ]),
     ]);

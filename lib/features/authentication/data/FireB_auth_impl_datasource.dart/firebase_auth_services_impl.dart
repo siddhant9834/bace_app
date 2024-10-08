@@ -29,7 +29,7 @@ class AuthService {
 
       if (user != null) {
         await _firestore.collection('users').doc().set({
-          'status': FieldValue.arrayUnion([DateTime.now().toIso8601String()]),
+          'status': [true],
           'email': email,
           'fullName': fullName,
           'phoneNumber': phoneNumber,
