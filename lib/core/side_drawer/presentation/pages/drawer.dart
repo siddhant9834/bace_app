@@ -81,7 +81,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Home',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -95,7 +95,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Photos',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -110,7 +110,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Seva Calendar',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -124,7 +124,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Seva List',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -139,7 +139,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Members of BACE',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -154,7 +154,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Morning Program',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -178,7 +178,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           title: Text(
             'Logout',
             style: Fonts.ubuntu(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w400,
                 color: ColorPallete.blackColor),
           ),
@@ -268,12 +268,12 @@ Widget buildHeader(BuildContext context, User user) {
                 overflow: TextOverflow.ellipsis,
                 profile.fullName,
                 style: Fonts.popins(
-                    fontSize: 20,
+                    fontSize: 22,
                     fontWeight: FontWeight.w500,
                     color: ColorPallete.blackColor),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 43, top: 10),
+                padding: const EdgeInsets.only(left: 43, top: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

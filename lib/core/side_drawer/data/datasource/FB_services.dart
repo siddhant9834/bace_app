@@ -86,7 +86,6 @@ class ProfileService {
       throw e;
     }
   }
-  
 
   // Future<void> updateStatus(bool status) async {
   //   try {
@@ -122,27 +121,29 @@ class ProfileService {
   //     throw 'Facing problem while updating IN/OUT status, try again after some time';
   //   }
   // }
-Future<void> updateStatus(bool status) async {
-   try {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('users')
-        .where('email', isEqualTo: getEmail())
-        .get();
+  Future<void> updateStatus(bool status) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: getEmail())
+          .get();
+
 
     if (querySnapshot.docs.isNotEmpty) {
       DocumentReference profileRef = querySnapshot.docs.first.reference;
-
-      await profileRef.set({
-        'status': FieldValue.arrayUnion([status]) 
-      }, SetOptions(merge: true)); 
+      DocumentSnapshot snapshot = await profileRef.get();
+      List<dynamic> currentStatus = snapshot['status'] ?? [];
+      currentStatus.add(status);
+      await profileRef.update({'status': currentStatus});
     } else {
-      print('No user found with the provided email.');
+        print('No user found with the provided email.');
+      }
+    } catch (e) {
+      print(
+          'Facing problem while adding IN/OUT status, try again after some time');
+      throw e;
     }
-  } catch (e) {
-    print('Facing problem while adding IN/OUT status, try again after some time');
-    throw e;
   }
-}
 
   //   Future<void> updateStatus(bool status) async {
   //   try {

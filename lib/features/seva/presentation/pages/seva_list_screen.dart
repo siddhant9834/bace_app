@@ -36,97 +36,145 @@ class SevaListScreen extends StatelessWidget {
       return currentUser.role;
     }
 
-    return FutureBuilder<List<SevaListModel>>(
-      future: locator<GetSevaListUseCase>().call(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          List<SevaListModel> sevaList = snapshot.data!;
-
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 4),
-            child: ListView.builder(
-              itemCount: sevaList.length,
-              itemBuilder: (context, index) {
-                final SevaListModel sevaMember = sevaList[index];
-
-                return Padding(
-                  padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-                  child: SizedBox(
-                    height: 80,
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                        if (globalRole == 'Seva Incharge') {
-                          var inputEmail = sevaMember.email;
-
-                          var seva = sevaMember.seva;
-                          var fullName = sevaMember.fullName;
-log('*****************${sevaMember.email}');
-                          context.pushNamed(
-                              MyAppRouteConstants.sevaDetailsScreen,
-                              pathParameters: {
-                                'inputEmail': inputEmail,
-                                'seva': seva,
-                                'fullName': fullName
-                              });
-                        }
-                      },
-                      child: Card(
-                        elevation: 4,
-                        color: ColorPallete.offWhiteListTileColor,
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 5),
-                            Container(
-                              width: 2,
-                              height: 50,
-                              color: const Color.fromARGB(255, 75, 69, 69),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      'Name : ${sevaMember.fullName}',
-                                      style: Fonts.firasans(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                          color: ColorPallete.blueColor),
+    return Scaffold(
+      backgroundColor: ColorPallete.offWhiteBackgroundColor,
+      body: FutureBuilder<List<SevaListModel>>(
+        future: locator<GetSevaListUseCase>().call(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            List<SevaListModel> sevaList = snapshot.data!;
+      
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: ListView.builder(
+                itemCount: sevaList.length,
+                itemBuilder: (context, index) {
+                  final SevaListModel sevaMember = sevaList[index];
+      
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+                    child: SizedBox(
+                      height: 80,
+                      width: double.infinity,
+                      child: InkWell(
+                        onTap: () {
+                          if (globalRole == 'Seva Incharge') {
+                            var inputEmail = sevaMember.email;
+      
+                            var seva = sevaMember.seva;
+                            var fullName = sevaMember.fullName;
+                            context.pushNamed(
+                                MyAppRouteConstants.sevaDetailsScreen,
+                                pathParameters: {
+                                  'inputEmail': inputEmail,
+                                  'seva': seva,
+                                  'fullName': fullName
+                                });
+                          }
+                        },
+                        child: Card(
+                          
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          elevation: 4,
+                                  color: Colors.white,
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 5),
+                              Container(
+                                width: 2,
+                                height: 50,
+                                color: const Color.fromARGB(255, 75, 69, 69),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: 'Name: ',
+                                          style: Fonts.firasans(
+                                              fontSize: 19,
+                                              fontWeight: FontWeight.w400,
+                                              color: ColorPallete.blueColor),
+      
+                                          /*defining default style is optional */
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              // text: member.fullName,
+                                              text: '${sevaMember.fullName}',
+      
+                                              style: Fonts.firasans(
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: ColorPallete.blackColor),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // child: Text(
+                                      //   'Name : ${member.fullName}',
+                                      //   style: Fonts.firasans(
+                                      //       fontSize: 20,
+                                      //       fontWeight:
+                                      //           FontWeight.w500,
+                                      //       color: ColorPallete
+                                      //           .blueColor),
+                                      // ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      'Seva : ${sevaMember.seva}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        color: Color.fromARGB(211, 0, 0, 0),
+                                    RichText(
+                                      text: TextSpan(
+                                        text: 'Seva: ',
+                                        style: Fonts.firasans(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400,
+                                            color: ColorPallete.blueColor),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: ' ${sevaMember.seva}',
+                                            style: Fonts.firasans(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400,
+                                                color: ColorPallete.blackColor),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                                    // Flexible(
+                                    //   child: Text(
+                                    //     'Seva : ${sevaMember.seva}',
+                                    //     overflow: TextOverflow.ellipsis,
+                                    //     style: const TextStyle(
+                                    //       fontSize: 17,
+                                    //       color: Color.fromARGB(211, 0, 0, 0),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        } else {
-          return const Center(child: Text('No users found.'));
-        }
-      },
+                  );
+                },
+              ),
+            );
+          } else {
+            return const Center(child: Text('No users found.'));
+          }
+        },
+      ),
     );
   }
 }

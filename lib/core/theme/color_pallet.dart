@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ColorPallete {
+  static Color offWhiteBackgroundColor = const Color.fromARGB(255, 238, 234, 239);
+    static Color skyBlueColor = const Color.fromARGB(255, 143, 195, 246);
+
   static Color whiteColor = Colors.white;
   static Color purpleColor = const Color(0xFFA14FC8);
   static Color pinkColor = const Color(0xFFEE7979);

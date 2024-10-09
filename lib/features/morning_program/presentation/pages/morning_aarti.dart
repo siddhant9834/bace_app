@@ -81,13 +81,16 @@ class MorningAarti extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
                     margin: EdgeInsets.all(0),
                     elevation: 3,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
+                        // borderRadius: BorderRadius.circular(30),
                         gradient: LinearGradient(
                           colors: [
                             Colors.yellow,

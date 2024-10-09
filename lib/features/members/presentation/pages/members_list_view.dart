@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,327 +44,334 @@ class UserListView extends StatelessWidget {
     // } else if (snapshot.hasData) {
     //   final userRole = snapshot.data;
 
-    return Scrollbar(
-      trackVisibility: true,
-      thickness: 10,
-      child: FutureBuilder<List<MembersModel>>(
-        future: locator<GetMembersUseCase>().call(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<MembersModel> members = snapshot.data!;
-            int memberCount = 0;
-            for (var member in members) {
-              bool latestStatus =
-                  member.status.isNotEmpty ? member.status.last : false;
-              if (latestStatus) {
-                memberCount++;
+    return Scaffold(
+            backgroundColor: ColorPallete.offWhiteBackgroundColor,
+
+      body: Scrollbar(
+        trackVisibility: true,
+        thickness: 10,
+        child: FutureBuilder<List<MembersModel>>(
+          future: locator<GetMembersUseCase>().call(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              List<MembersModel> members = snapshot.data!;
+              int memberCount = 0;
+              for (var member in members) {
+                bool latestStatus =
+                    member.status.isNotEmpty ? member.status.last : false;
+                if (latestStatus) {
+                  memberCount++;
+                }
               }
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Total IN Count: ',
-                      style: Fonts.firasans(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                          color: ColorPallete.blackColor),
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: '$memberCount',
-                            style: Fonts.ubuntu(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                                color: ColorPallete.greenColor)),
-                      ],
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Total IN Count: ',
+                        style: Fonts.firasans(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                            color: ColorPallete.blackColor),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: '$memberCount',
+                              style: Fonts.ubuntu(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  color: ColorPallete.greenColor)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: ListView.builder(
-                      itemCount: members.length,
-                      itemBuilder: (context, index) {
-                        final MembersModel member = members[index];
-                        bool latestStatus = member.status.isNotEmpty
-                            ? member.status.last
-                            : false;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-                          child: SizedBox(
-                            height: 80,
-                            width: double.infinity,
-                            child: InkWell(
-                              onTap: () {
-                                if (globalRole == 'Admin' ||
-                                    globalRole == 'Authority' ||
-                                    globalRole == 'OC') {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        elevation: 4,
-                                        backgroundColor:
-                                            ColorPallete.whiteColor,
-                                        title: Text('Details'),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                'Name : ${member.fullName}',
-                                                style: Fonts.firasans(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorPallete
-                                                        .blackColor),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                'Email : ${member.email}',
-                                                style: Fonts.firasans(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorPallete
-                                                        .blackColor),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                'Ph : ${member.phoneNumber}',
-                                                style: Fonts.firasans(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorPallete
-                                                        .blackColor),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                'Role : ${member.role}',
-                                                style: Fonts.firasans(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorPallete
-                                                        .blackColor),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                latestStatus ? 'IN' : 'OUT',
-                                                style: Fonts.popins(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: latestStatus
-                                                      ? Colors.green
-                                                      : ColorPallete.redColor,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        actions: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: ListView.builder(
+                        itemCount: members.length,
+                        itemBuilder: (context, index) {
+                          final MembersModel member = members[index];
+                          bool latestStatus = member.status.isNotEmpty
+                              ? member.status.last
+                              : false;
+      
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+                            child: SizedBox(
+                              height: 80,
+                              width: double.infinity,
+                              child: InkWell(
+                                onTap: () {
+                                  if (globalRole == 'Admin' ||
+                                      globalRole == 'Authority' ||
+                                      globalRole == 'OC') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          elevation: 4,
+                                          backgroundColor:
+                                              ColorPallete.whiteColor,
+                                          title: Text('Details'),
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Edit Role'),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('OK'),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                              child: Card(
-                                elevation: 4,
-                                color: ColorPallete.offWhiteListTileColor,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.all(2),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: ColorPallete.orangeColor,
-                                            ),
-                                            child: ClipOval(
-                                              child: CachedNetworkImage(
-                                                imageUrl: member.profilePic,
-                                                fit: BoxFit.cover,
-                                                width: 50,
-                                                height: 50,
-                                                placeholder: (context, url) =>
-                                                    CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Container(
-                                      width: 2,
-                                      height: 50,
-                                      color:
-                                          const Color.fromARGB(255, 75, 69, 69),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Flexible(
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: 'Name: ',
-                                                style: Fonts.firasans(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w500,
-                                                    color:
-                                                        ColorPallete.blueColor),
-
-                                                /*defining default style is optional */
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                    text: member.fullName,
-                                                    style: Fonts.firasans(
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: ColorPallete
-                                                            .blackColor),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // child: Text(
-                                            //   'Name : ${member.fullName}',
-                                            //   style: Fonts.firasans(
-                                            //       fontSize: 20,
-                                            //       fontWeight:
-                                            //           FontWeight.w500,
-                                            //       color: ColorPallete
-                                            //           .blueColor),
-                                            // ),
-                                          ),
-                                          Flexible(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                RichText(
-                                                  text: TextSpan(
-                                                    text: 'Ph: ',
-                                                    style: Fonts.firasans(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: ColorPallete
-                                                            .blueColor),
-                                                    children: <TextSpan>[
-                                                      TextSpan(
-                                                        text:
-                                                            member.phoneNumber,
-                                                        style: Fonts.firasans(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: ColorPallete
-                                                                .blackColor),
-                                                      ),
-                                                    ],
-                                                  ),
+                                              Flexible(
+                                                child: Text(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  'Name : ${member.fullName}',
+                                                  style: Fonts.firasans(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ColorPallete
+                                                          .blackColor),
                                                 ),
-
-                                                // Text(
-                                                //   'Ph : ${member.phoneNumber}',
-                                                //   overflow: TextOverflow
-                                                //       .ellipsis,
-                                                //   style: const TextStyle(
-                                                //     fontSize: 17,
-                                                //     color: Color.fromARGB(
-                                                //         211, 0, 0, 0),
-                                                //   ),
-                                                // ),
-                                                Expanded(
-                                                  child: SizedBox(),
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  'Email : ${member.email}',
+                                                  style: Fonts.firasans(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ColorPallete
+                                                          .blackColor),
                                                 ),
-                                                Text(
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  'Ph : ${member.phoneNumber}',
+                                                  style: Fonts.firasans(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ColorPallete
+                                                          .blackColor),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  overflow: TextOverflow.ellipsis,
+                                                  'Role : ${member.role}',
+                                                  style: Fonts.firasans(
+                                                      fontSize: 20,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ColorPallete
+                                                          .blackColor),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Text(
                                                   latestStatus ? 'IN' : 'OUT',
-                                                  style: Fonts.ubuntu(
-                                                    fontSize: 17,
+                                                  style: Fonts.popins(
+                                                    fontSize: 20,
                                                     fontWeight: FontWeight.w500,
                                                     color: latestStatus
                                                         ? Colors.green
                                                         : ColorPallete.redColor,
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  width: 20,
-                                                )
-                                              ],
-                                            ),
+                                              )
+                                            ],
                                           ),
-                                        ],
+                                          actions: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Edit Role'),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('OK'),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  elevation: 4,
+                                  color: Colors.white,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.all(1.5),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: ColorPallete.orangeColor,
+                                              ),
+                                              child: ClipOval(
+                                                child: CachedNetworkImage(
+                                                  imageUrl: member.profilePic,
+                                                  fit: BoxFit.cover,
+                                                  width: 50,
+                                                  height: 50,
+                                                  placeholder: (context, url) =>
+                                                      CircularProgressIndicator(),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Icon(Icons.error),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    )
-                                  ],
+                                      const SizedBox(width: 5),
+                                      Container(
+                                        width: 2,
+                                        height: 50,
+                                        color:
+                                            const Color.fromARGB(255, 75, 69, 69),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Flexible(
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  text: 'Name: ',
+                                                  style: Fonts.firasans(
+                                                      fontSize: 19,
+                                                      fontWeight: FontWeight.w400,
+                                                      color:
+                                                          ColorPallete.blueColor),
+      
+                                                  /*defining default style is optional */
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: member.fullName,
+                                                      style: Fonts.firasans(
+                                                          fontSize: 19,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: ColorPallete
+                                                              .blackColor),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // child: Text(
+                                              //   'Name : ${member.fullName}',
+                                              //   style: Fonts.firasans(
+                                              //       fontSize: 20,
+                                              //       fontWeight:
+                                              //           FontWeight.w500,
+                                              //       color: ColorPallete
+                                              //           .blueColor),
+                                              // ),
+                                            ),
+                                            Flexible(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      text: 'Ph: ',
+                                                      style: Fonts.firasans(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: ColorPallete
+                                                              .blueColor),
+                                                      children: <TextSpan>[
+                                                        TextSpan(
+                                                          text:
+                                                              member.phoneNumber,
+                                                          style: Fonts.firasans(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight.w400,
+                                                              color: ColorPallete
+                                                                  .blackColor),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+      
+                                                  // Text(
+                                                  //   'Ph : ${member.phoneNumber}',
+                                                  //   overflow: TextOverflow
+                                                  //       .ellipsis,
+                                                  //   style: const TextStyle(
+                                                  //     fontSize: 17,
+                                                  //     color: Color.fromARGB(
+                                                  //         211, 0, 0, 0),
+                                                  //   ),
+                                                  // ),
+                                                  Expanded(
+                                                    child: SizedBox(),
+                                                  ),
+                                                  Text(
+                                                    latestStatus ? 'IN' : 'OUT',
+                                                    style: Fonts.ubuntu(
+                                                      fontSize: 17,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: latestStatus
+                                                          ? Colors.green
+                                                          : ColorPallete.redColor,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          } else {
-            return const Center(child: Text('No users found.'));
-          }
-        },
+                ],
+              );
+            } else {
+              return const Center(child: Text('No users found.'));
+            }
+          },
+        ),
       ),
     );
   }

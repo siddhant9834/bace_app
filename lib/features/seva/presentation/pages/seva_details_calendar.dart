@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
 import 'package:mayapur_bace/features/seva/presentation/widgets/edit_seva_dialog.dart';
@@ -71,7 +72,7 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Daily Seva")),
+      appBar: AppBar(title: const Text("Daily Seva Details")),
       body: Column(
         children: [
             Flexible(
@@ -97,6 +98,7 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                   ),
                 ),
           TableCalendar(
+            
             focusedDay: _selectedDay,
             firstDay: DateTime(2023, 1, 1),
             lastDay: DateTime(2030, 12, 31),
@@ -106,6 +108,52 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                 _selectedDay = selectedDay;
               });
             },
+             calendarStyle: const CalendarStyle(
+              
+              selectedTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600
+                  ),
+              todayTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+              weekendTextStyle: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+
+                color: Colors.orange, // Text color for weekends
+              ),
+              defaultTextStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+              selectedDecoration: BoxDecoration(
+                color: Colors.orange,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+            ),
+            headerStyle: const HeaderStyle(
+            titleTextStyle: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, // Header title text color
+            ),
+            formatButtonVisible: false, // Hide format button
+            leftChevronIcon: Icon(
+              Icons.chevron_left,
+              color: Colors.black, // Left chevron icon color
+            ),
+            rightChevronIcon: Icon(
+              Icons.chevron_right,
+              color: Colors.black, // Right chevron icon color
+            ),
+          ),
             calendarBuilders: CalendarBuilders(
               defaultBuilder: (context, day, focusedDay) {
                 if (_dailyWorkStatus.containsKey(day)) {
@@ -138,12 +186,16 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
               child: Container(
                 decoration: BoxDecoration(
-                    color: ColorPallete.blueColor,
+                    // color: ColorPallete.blueColor,
+                        color: _dailyWorkStatus[_selectedDay] == '✔ Completed' ? Colors.green : Colors.red, // Change color based on status
+
                     borderRadius: const BorderRadius.all(Radius.circular(6))),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Text(
-                  "Seva for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
-                  style: Fonts.alata(
+                  "Seva for ${DateFormat('dd MMMM yyyy').format(_selectedDay)} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+
+                  // "Seva for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                  style: Fonts.popins(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.black),
@@ -162,7 +214,6 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                             const Color.fromARGB(255, 65, 135, 240),
                       ),
               onPressed: (){
-                log('${widget.inputEmail}**************');
                 sevaUpdateDialog(context, widget.inputEmail, widget.seva, widget.fullName);
                 
               },
