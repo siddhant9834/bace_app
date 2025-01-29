@@ -17,3 +17,7 @@ class StatusButtonClickedEevent extends DrawerEvent{
 
   StatusButtonClickedEevent({required this.status});
 }
+
+class AttendencePageClickedEvent extends DrawerEvent{}
+class AttendenceDetailsPageClickedEvent extends DrawerEvent{}
+

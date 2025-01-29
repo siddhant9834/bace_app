@@ -19,58 +19,66 @@ void sevaUpdateDialog(BuildContext context, String inputEmail, String seva, Stri
         },
         builder: (context, state) {
           return AlertDialog(
+            
             elevation: 4,
             backgroundColor: ColorPallete.whiteColor,
             title: Text('Seva Details'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    'Name : ${fullName}',
-                    style: Fonts.firasans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: ColorPallete.blackColor,
-                    ),
+            content: ConstrainedBox(
+                 constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * .8,
                   ),
-                ),
-               
-                SizedBox(
-                  height: 10,
-                ),
-                if (state is SevaEditState)
-                  TextField(
-                    
-                    controller: sevaController,
-                    decoration: InputDecoration(
-                      focusColor: ColorPallete.orangeColor,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: ColorPallete.whiteColor),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        overflow: TextOverflow.ellipsis,
+                        'Name : ${fullName}',
+                        style: Fonts.firasans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: ColorPallete.blackColor,
+                        ),
                       ),
-                      labelStyle: Fonts.popins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                    ),
+                   
+                    SizedBox(
+                      height: 10,
+                    ),
+                    if (state is SevaEditState)
+                      TextField(
+                        
+                        controller: sevaController,
+                        decoration: InputDecoration(
+                          focusColor: ColorPallete.orangeColor,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: ColorPallete.whiteColor),
+                          ),
+                          labelStyle: Fonts.popins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                          labelText: 'Enter New Seva',
+                        ),
+                      )
+                    else
+                      Flexible(
+                      child: Text(
+                        overflow: TextOverflow.ellipsis,
+                        'Seva : ${seva}',
+                        style: Fonts.firasans(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400,
+                          color: ColorPallete.blackColor,
+                        ),
                       ),
-                      labelText: 'Enter New Seva',
-                    ),
-                  )
-                else
-                  Flexible(
-                  child: Text(
-                    overflow: TextOverflow.ellipsis,
-                    'Seva : ${seva}',
-                    style: Fonts.firasans(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                      color: ColorPallete.blackColor,
-                    ),
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ),
+              ),
             ),
             actions: [
               Row(

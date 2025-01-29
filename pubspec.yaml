@@ -53,6 +53,7 @@ dependencies:
   firebase_analytics: ^10.8.0
   cached_network_image: ^3.4.1
   flutter_launcher_icons: ^0.13.1
+  sticky_headers: ^0.3.0+2
   # flutter_native_splash: ^2.4.1
 
 
@@ -88,6 +89,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/images/thumbnail_images/
+    - assets/images/thumbnail_images/jaggnath_puri.jpeg
     - assets/images/thumbnail_images/lifeatbace.jpg
     - assets/icons/bace_logo.jpg
     - assets/icons/profile_emoji.png

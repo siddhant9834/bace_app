@@ -100,7 +100,7 @@ class _RegistrationState extends State<Registration> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Full Name',
+                    'Name',
                     style: TextStyle(
                       fontSize: 14,
                       color: ColorPallete.blackColor,

@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/di/dependency_injection_container.dart';
+import 'package:mayapur_bace/core/routes/page_route_constants.dart';
 import 'package:mayapur_bace/core/side_drawer/presentation/pages/drawer.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
@@ -45,8 +47,7 @@ class UserListView extends StatelessWidget {
     //   final userRole = snapshot.data;
 
     return Scaffold(
-            backgroundColor: ColorPallete.offWhiteBackgroundColor,
-
+      backgroundColor: ColorPallete.offWhiteBackgroundColor,
       body: Scrollbar(
         trackVisibility: true,
         thickness: 10,
@@ -100,9 +101,10 @@ class UserListView extends StatelessWidget {
                           bool latestStatus = member.status.isNotEmpty
                               ? member.status.last
                               : false;
-      
+
                           return Padding(
-                            padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+                            padding:
+                                const EdgeInsets.only(top: 2.0, bottom: 2.0),
                             child: SizedBox(
                               height: 80,
                               width: double.infinity,
@@ -126,44 +128,52 @@ class UserListView extends StatelessWidget {
                                             children: [
                                               Flexible(
                                                 child: Text(
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   'Name : ${member.fullName}',
                                                   style: Fonts.firasans(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: ColorPallete
                                                           .blackColor),
                                                 ),
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   'Email : ${member.email}',
                                                   style: Fonts.firasans(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: ColorPallete
                                                           .blackColor),
                                                 ),
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   'Ph : ${member.phoneNumber}',
                                                   style: Fonts.firasans(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: ColorPallete
                                                           .blackColor),
                                                 ),
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  overflow: TextOverflow.ellipsis,
-                                                  'Role : ${member.role}',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  'Dept : ${member.role}',
                                                   style: Fonts.firasans(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: ColorPallete
                                                           .blackColor),
                                                 ),
@@ -184,20 +194,126 @@ class UserListView extends StatelessWidget {
                                           ),
                                           actions: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              // mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
                                                 ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 65, 135, 240),
+                                                  ),
+                                                  onPressed: () {
+                                                    // Navigator.pop(context);
+                                                    var inputEmail =
+                                                        member.email;
+
+                                                    var fullName =
+                                                        member.fullName;
+
+                                                    // storeCurrentUsersSeva(seva);
+                                                    context.pushNamed(
+                                                        MyAppRouteConstants
+                                                            .attendenceDetailsScreen,
+                                                        pathParameters: {
+                                                          'inputEmail':
+                                                              inputEmail,
+                                                          'fullName': fullName
+                                                        });
+                                                    Navigator.pop(context);
+                                                    // storeCurrentUsersSeva(seva);
+
+                                                    // context.pushNamed(
+                                                    //     MyAppRouteConstants
+                                                    //         .attendenceDetailsScreen,
+                                                    //     pathParameters: {
+                                                    //       'inputEmail':
+                                                    //           inputEmail,
+                                                    //       'fullName': fullName
+                                                    //     });
+                                                  },
+                                                  child: Text('Attendence',
+                                                      style: Fonts.ubuntu(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: ColorPallete
+                                                              .blackColor)),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 65, 135, 240),
+                                                  ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('Edit Role'),
+                                                  child: Text('Edit Role',
+                                                      style: Fonts.ubuntu(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: ColorPallete
+                                                              .blackColor)),
                                                 ),
                                                 ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 65, 135, 240),
+                                                  ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('OK'),
+                                                  child: Text('OK',
+                                                      style: Fonts.ubuntu(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: ColorPallete
+                                                              .blackColor)),
                                                 ),
                                               ],
                                             )
@@ -249,8 +365,8 @@ class UserListView extends StatelessWidget {
                                       Container(
                                         width: 2,
                                         height: 50,
-                                        color:
-                                            const Color.fromARGB(255, 75, 69, 69),
+                                        color: const Color.fromARGB(
+                                            255, 75, 69, 69),
                                       ),
                                       const SizedBox(width: 10),
                                       Expanded(
@@ -266,10 +382,11 @@ class UserListView extends StatelessWidget {
                                                   text: 'Name: ',
                                                   style: Fonts.firasans(
                                                       fontSize: 19,
-                                                      fontWeight: FontWeight.w400,
-                                                      color:
-                                                          ColorPallete.blueColor),
-      
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: ColorPallete
+                                                          .blueColor),
+
                                                   /*defining default style is optional */
                                                   children: <TextSpan>[
                                                     TextSpan(
@@ -310,19 +427,45 @@ class UserListView extends StatelessWidget {
                                                               .blueColor),
                                                       children: <TextSpan>[
                                                         TextSpan(
-                                                          text:
-                                                              member.phoneNumber,
+                                                          text: member
+                                                              .phoneNumber,
                                                           style: Fonts.firasans(
                                                               fontSize: 15,
                                                               fontWeight:
-                                                                  FontWeight.w400,
+                                                                  FontWeight
+                                                                      .w400,
                                                               color: ColorPallete
                                                                   .blackColor),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
-      
+                                                  Expanded(child: SizedBox()),
+                                                  if (member.role != 'Member')
+                                                    RichText(
+                                                      text: TextSpan(
+                                                        text: 'Dept: ',
+                                                        style: Fonts.firasans(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: ColorPallete
+                                                                .blueColor),
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                            text: member.role,
+                                                            style: Fonts.firasans(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: ColorPallete
+                                                                    .blackColor),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+
                                                   // Text(
                                                   //   'Ph : ${member.phoneNumber}',
                                                   //   overflow: TextOverflow
@@ -340,10 +483,12 @@ class UserListView extends StatelessWidget {
                                                     latestStatus ? 'IN' : 'OUT',
                                                     style: Fonts.ubuntu(
                                                       fontSize: 17,
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       color: latestStatus
                                                           ? Colors.green
-                                                          : ColorPallete.redColor,
+                                                          : ColorPallete
+                                                              .redColor,
                                                     ),
                                                   ),
                                                   SizedBox(

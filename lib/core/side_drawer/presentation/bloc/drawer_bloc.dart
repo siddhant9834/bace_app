@@ -16,10 +16,13 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     on<SevaButtonClickedEvent>(sevaButtonClickedEvent);
     on<CalendarButtonClickedEvent>(calendarButtonClickedEvent);
     on<MembersButtonClickedEvent>(membersButtonClickedEvent);
-
     on<SevaListButtonClickedEvent>(sevaListButtonClickedEvent);
-        on<MorningProgramButtonClickedEvent>(morningProgramButtonClickedEvent);
+    on<MorningProgramButtonClickedEvent>(morningProgramButtonClickedEvent);
     on<StatusButtonClickedEevent>(statusButtonClickedEevent);
+    on<AttendencePageClickedEvent>(attendencePageButtonClickedEvent);
+        on<AttendenceDetailsPageClickedEvent>(attendenceDetailsPageButtonClickedEvent);
+
+    
   }
 
   FutureOr<void> homeButtonClickedEvent(
@@ -52,15 +55,26 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     emit(SevaListButtonClickedState());
   }
 
-  FutureOr<void> morningProgramButtonClickedEvent(MorningProgramButtonClickedEvent event, Emitter<DrawerState> emit) {
+  FutureOr<void> morningProgramButtonClickedEvent(
+      MorningProgramButtonClickedEvent event, Emitter<DrawerState> emit) {
     emit(MorningProgramButtonClickedState());
   }
 
-  FutureOr<void> statusButtonClickedEevent(StatusButtonClickedEevent event, Emitter<DrawerState> emit) async{
-                                                    log('bloc  clicked');
+  FutureOr<void> attendencePageButtonClickedEvent(
+      AttendencePageClickedEvent event, Emitter<DrawerState> emit) {
+    emit(AttendencePageClickedState());
+  }
+
+  
+  FutureOr<void> attendenceDetailsPageButtonClickedEvent(
+      AttendenceDetailsPageClickedEvent event, Emitter<DrawerState> emit) {
+    emit(AttendenceDetailsPageClickedState());
+  }
+
+  FutureOr<void> statusButtonClickedEevent(
+      StatusButtonClickedEevent event, Emitter<DrawerState> emit) async {
+    log('bloc  clicked');
 
     await locator<UpdateStatusUsecases>().callStatus(event.status);
-
-    
   }
 }

@@ -40,12 +40,16 @@ class AuthService {
           // 'profilePic': imageUrl,
         });
         await _firestore.collection('seva_assigned').doc(email).set({
-          // 'email': email,
+          'email': email,
           'fullName': fullName,
           'Ph': phoneNumber,
           // 'role': 'Member',
-          'seva': 'Not Assigned Yet'
+          'seva': 'NA'
           // 'profilePic': imageUrl,
+        });
+         await _firestore.collection('seva_calendar').doc(email).set({
+    
+          'seva': 'NA'
         });
       }
 

@@ -11,6 +11,7 @@ import 'package:mayapur_bace/features/members/data/model/members_model.dart';
 import 'package:mayapur_bace/features/members/domain/usecases/members_usecases.dart';
 import 'package:mayapur_bace/features/seva/data/model/seva_model.dart';
 import 'package:mayapur_bace/features/seva/domain/usecases/user_list_usecases.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 String? currentUsersSeva;
 
@@ -35,7 +36,7 @@ class SevaListScreen extends StatelessWidget {
       // currentUsersSeva = currentUser.;
       return currentUser.role;
     }
-
+ 
     return Scaffold(
       backgroundColor: ColorPallete.offWhiteBackgroundColor,
       body: FutureBuilder<List<SevaListModel>>(
@@ -47,7 +48,14 @@ class SevaListScreen extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             List<SevaListModel> sevaList = snapshot.data!;
-      
+                        String? currentEmail = getEmail();
+
+            // for (var sevaMember in sevaList) {
+            //   if (sevaMember.email == currentEmail) {
+            //     currentUsersSeva = sevaMember.seva;
+            //     break; 
+            //   }
+            // }
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: ListView.builder(
@@ -62,11 +70,13 @@ class SevaListScreen extends StatelessWidget {
                       width: double.infinity,
                       child: InkWell(
                         onTap: () {
-                          if (globalRole == 'Seva Incharge') {
+                          if (globalRole == 'Seva Incharge' || globalRole == 'Authority' || globalRole == 'Admin' || globalRole == 'OC') {
                             var inputEmail = sevaMember.email;
-      
+
                             var seva = sevaMember.seva;
                             var fullName = sevaMember.fullName;
+                            currentUsersSeva=seva;
+                            // storeCurrentUsersSeva(seva);
                             context.pushNamed(
                                 MyAppRouteConstants.sevaDetailsScreen,
                                 pathParameters: {

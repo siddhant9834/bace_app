@@ -16,3 +16,7 @@ class MembersButtonClickedState extends DrawerState{}
 class SevaListButtonClickedState extends DrawerState{}
 class MorningProgramButtonClickedState extends DrawerState{}
 class StatusButtonClickedState extends DrawerState{}
+class AttendencePageClickedState extends DrawerState{}
+class AttendenceDetailsPageClickedState extends DrawerState{}
+
+

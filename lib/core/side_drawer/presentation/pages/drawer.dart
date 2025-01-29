@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -43,18 +44,23 @@ class NavigationDrawerCustom extends StatelessWidget {
         child: BlocListener<DrawerBloc, DrawerState>(
           listener: (context, state) {
             if (state is HomeButtonClickedState) {
-              context.pushReplacement('/home', extra: "Mayapur Bace");
+              context.push('/home', extra: "Mayapur Bace");
             } else if (state is PhotosButtonClickedState) {
-              context.pushReplacement('/images', extra: "Photos Category");
+              context.push('/images', extra: "Photos Category");
             } else if (state is MembersButtonClickedState) {
-              context.pushReplacement('/members', extra: "Members");
+              context.push('/members', extra: "Members");
             } else if (state is SevaButtonClickedState) {
-              context.pushReplacement('/seva', extra: "Seva Chart");
+              context.push('/seva', extra: "Seva Chart");
             } else if (state is SevaListButtonClickedState) {
-              context.pushReplacement('/seva_list', extra: "Seva List");
+              context.push('/seva_list', extra: "Seva List");
             } else if (state is MorningProgramButtonClickedState) {
-              context.pushReplacement('/morning_program',
-                  extra: "Morning Program");
+              context.push('/morning_program', extra: "Morning Program");
+            }
+             else if (state is AttendencePageClickedState) {
+              context.push('/attendence_page', extra: "Attendence");
+            }
+             else if (state is AttendenceDetailsPageClickedState) {
+              context.push('/attendence_details_page', extra: "Attendence Details");
             }
           },
           child: SingleChildScrollView(
@@ -150,7 +156,7 @@ class NavigationDrawerCustom extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: Icon(Icons.people_sharp),
+          leading: Icon(Icons.wb_sunny),
           title: Text(
             'Morning Program',
             style: Fonts.ubuntu(
@@ -164,6 +170,21 @@ class NavigationDrawerCustom extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
+          ListTile(
+          leading: Icon(Icons.note_add_outlined),
+          title: Text(
+            'Attendence Page',
+            style: Fonts.ubuntu(
+                fontSize: 22,
+                fontWeight: FontWeight.w400,
+                color: ColorPallete.blackColor),
+          ),
+          onTap: () {
+            BlocProvider.of<DrawerBloc>(context)
+                .add(AttendencePageClickedEvent());
+            Navigator.of(context).pop();
+          },
+        ),
         SizedBox(
           height: 300,
         ),
@@ -174,13 +195,16 @@ class NavigationDrawerCustom extends StatelessWidget {
           endIndent: 16,
         ),
         ListTile(
-          leading: Icon(Icons.logout),
+          leading: Icon(
+            Icons.logout,
+            color: ColorPallete.redColor,
+          ),
           title: Text(
             'Logout',
             style: Fonts.ubuntu(
                 fontSize: 22,
                 fontWeight: FontWeight.w400,
-                color: ColorPallete.blackColor),
+                color: ColorPallete.redColor),
           ),
           onTap: () async {
             final sharedPref = await SharedPreferences.getInstance();
@@ -189,6 +213,7 @@ class NavigationDrawerCustom extends StatelessWidget {
             // Navigator.of(context).pop();
           },
         ),
+        
       ],
     );
   }
@@ -197,229 +222,241 @@ class NavigationDrawerCustom extends StatelessWidget {
 Widget buildHeader(BuildContext context, User user) {
   String? email = ProfileService().getEmail();
 
-  return Container(
-    color: ColorPallete.blueColor,
-    padding: EdgeInsets.only(
-      left: 18,
-      right: 18,
-      top: MediaQuery.of(context).padding.top * 1.5,
-      bottom: MediaQuery.of(context).padding.top * .30,
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      image: DecorationImage(
+          image: AssetImage("assets/images/thumbnail_images/mayapur.jpeg"),
+          fit: BoxFit.fill),
     ),
-    child: FutureBuilder<ProfileModel>(
-      future: locator<GetProfileUseCase>().call(email.toString()),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: Text('Loading User Data...'));
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.hasData && snapshot.data != null) {
-          final profile = snapshot.data!;
-          globalRole = profile.role;
-          List<dynamic> statusList = profile.status;
-          bool latestStatus = statusList.last;
-
-          log(latestStatus.toString());
-          return Column(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ColorPallete.liteOffWhiteTextColor,
-                    ),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: profile.profilePic,
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Image.asset(
-                          'assets/images/default_dp_img.jpg',
+    child: Container(
+      // color: ColorPallete.blueColor,
+      padding: EdgeInsets.only(
+        left: 18,
+        right: 18,
+        top: MediaQuery.of(context).padding.top * 1.5,
+        bottom: MediaQuery.of(context).padding.top * .30,
+      ),
+      child: FutureBuilder<ProfileModel>(
+        future: locator<GetProfileUseCase>().call(email.toString()),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: Text('Loading User Profile...'));
+          } else if (snapshot.hasError) {
+            return Text('There is a problem....!!!: ${snapshot.error}');
+          } else if (snapshot.hasData && snapshot.data != null) {
+            final profile = snapshot.data!;
+            globalRole = profile.role;
+            List<dynamic> statusList = profile.status;
+            bool latestStatus = statusList.last;
+  
+            log(latestStatus.toString());
+            return Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ColorPallete.liteOffWhiteTextColor,
+                      ),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: profile.profilePic,
                           fit: BoxFit.cover,
                           width: 100,
                           height: 100,
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/default_dp_img.jpg',
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 65,
-                    child: InkWell(
-                      onTap: () {
-                        showProfileImagePickerOption(context);
-                      },
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: ColorPallete.greenColor,
-                        child: SvgPicture.asset('assets/icons/edit_pencil.svg'),
+                    Positioned(
+                      right: 0,
+                      top: 65,
+                      child: InkWell(
+                        onTap: () {
+                          showProfileImagePickerOption(context);
+                        },
+                        child: CircleAvatar(
+                          radius: 16,
+                          backgroundColor: ColorPallete.greenColor,
+                          child: SvgPicture.asset(
+                              'assets/icons/edit_pencil.svg'),
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                overflow: TextOverflow.ellipsis,
-                profile.fullName,
-                style: Fonts.popins(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w500,
-                    color: ColorPallete.blackColor),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 43, top: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                          color: ColorPallete.offWhiteListTileColor,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Text(
-                        latestStatus ? 'IN' : 'OUT',
-                        style: Fonts.popins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: latestStatus
-                                ? Colors.green
-                                : ColorPallete.redColor),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                contentPadding: EdgeInsets.all(20),
-                                backgroundColor: ColorPallete.whiteColor,
-                                actionsAlignment: MainAxisAlignment.center,
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text('Edit'), // Dialog title
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.close,
-                                        size: 25,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    latestStatus
-                                        ? Text(
-                                            'Want to get out...???',
-                                            style: Fonts.nunitoSans(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black),
-                                          )
-                                        :
-                                        // ? TextField(
-                                        //     decoration: InputDecoration(
-                                        //       focusColor:
-                                        //           ColorPallete.orangeColor,
-                                        //       border: OutlineInputBorder(
-                                        //           borderSide: BorderSide(
-                                        //               color: ColorPallete
-                                        //                   .whiteColor)),
-                                        //       labelStyle: Fonts.popins(
-                                        //           fontSize: 20,
-                                        //           fontWeight: FontWeight.w400,
-                                        //           color: Colors.black),
-                                        //       labelText: 'Enter Reason for Out',
-                                        //     ),
-                                        //   )
-                                        // :
-                                        Text(
-                                            'Want to getin...???',
-                                            style: Fonts.nunitoSans(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black),
-                                          ),
-                                  ],
-                                ),
-                                actions: [
-                                  SizedBox(
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.all(10),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 65, 135, 240),
-                                      ),
-                                      onPressed: () {
-                                        if (latestStatus == false) {
-                                          BlocProvider.of<DrawerBloc>(context)
-                                              .add(StatusButtonClickedEevent(
-                                                  status: true));
-                                        } else {
-                                          BlocProvider.of<DrawerBloc>(context)
-                                              .add(StatusButtonClickedEevent(
-                                                  status: false));
-                                          log('status event clicked');
-                                        }
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        latestStatus ? 'Confirm OUT' : 'IN',
-                                        style: Fonts.ubuntu(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: ColorPallete.redColor),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      child: const Icon(
-                        Icons.edit_rounded,
-                        size: 22.0,
-                        color: Colors.black,
-                      ),
-                    ),
+                    )
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  '- $globalRole',
-                  style: Fonts.popins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: ColorPallete.blackColor),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
-          );
-        } else {
-          return const Text('No data available');
-        }
-      },
+                Text(
+                  overflow: TextOverflow.ellipsis,
+                  profile.fullName,
+                  style: Fonts.popins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: ColorPallete.offWhiteBackgroundColor),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    '- $globalRole',
+                    style: Fonts.popins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
+                        color: ColorPallete.offWhiteBackgroundColor),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 43, top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: ColorPallete.offWhiteListTileColor,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Text(
+                          latestStatus ? 'IN' : 'OUT',
+                          style: Fonts.popins(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: latestStatus
+                                  ? Colors.green
+                                  : ColorPallete.redColor),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(20),
+                                  backgroundColor: ColorPallete.whiteColor,
+                                  actionsAlignment: MainAxisAlignment.center,
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Edit'),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          size: 25,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      latestStatus
+                                          ? Text(
+                                              'Want to get out...???',
+                                              style: Fonts.nunitoSans(
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            )
+                                          :
+                                          // ? TextField(
+                                          //     decoration: InputDecoration(
+                                          //       focusColor:
+                                          //           ColorPallete.orangeColor,
+                                          //       border: OutlineInputBorder(
+                                          //           borderSide: BorderSide(
+                                          //               color: ColorPallete
+                                          //                   .whiteColor)),
+                                          //       labelStyle: Fonts.popins(
+                                          //           fontSize: 20,
+                                          //           fontWeight: FontWeight.w400,
+                                          //           color: Colors.black),
+                                          //       labelText: 'Enter Reason for Out',
+                                          //     ),
+                                          //   )
+                                          // :
+                                          Text(
+                                              'Want to getin...???',
+                                              style: Fonts.nunitoSans(
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    SizedBox(
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.all(10),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          backgroundColor:
+                                              const Color.fromARGB(
+                                                  255, 65, 135, 240),
+                                        ),
+                                        onPressed: () {
+                                          if (latestStatus == false) {
+                                            BlocProvider.of<DrawerBloc>(
+                                                    context)
+                                                .add(
+                                                    StatusButtonClickedEevent(
+                                                        status: true));
+                                          } else {
+                                            BlocProvider.of<DrawerBloc>(
+                                                    context)
+                                                .add(
+                                                    StatusButtonClickedEevent(
+                                                        status: false));
+                                            log('status event clicked');
+                                          }
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          latestStatus ? 'Confirm OUT' : 'IN',
+                                          style: Fonts.ubuntu(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: ColorPallete.redColor),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child:  Icon(
+                          Icons.edit_rounded,
+                          size: 22.0,
+                          color: ColorPallete.offWhiteListTileColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Center(child: const Text('No data available'));
+          }
+        },
+      ),
     ),
   );
 }

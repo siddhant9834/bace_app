@@ -13,6 +13,7 @@ class ProfileModel extends ProfileEntity {
       required super.profilePic});
 
   factory ProfileModel.fromMap(Map<String, dynamic> data) {
+    
     return ProfileModel(
       // uid: data['uid']?.toString() ?? '',
       email: data['email']?.toString() ?? '',

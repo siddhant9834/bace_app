@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
@@ -28,6 +30,7 @@ class PhotosCategory extends StatelessWidget {
     };
 
     return Scaffold(
+      backgroundColor: Colors.white,
       // appBar: ApplicationToolbar(
       //   title: 'Photos Categories',
       //   color: ColorPallete.blueColor,
@@ -45,7 +48,7 @@ class PhotosCategory extends StatelessWidget {
                 // context.go('/images_screen');
                 final selectedCategory =
                     category; // Replace with the actual category
-                context.go(
+                context.push(
                   '/images/image_screen',
                   extra: selectedCategory,
                 );
@@ -62,42 +65,129 @@ class PhotosCategory extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                //           color: ColorPallete.offWhiteListTileColor,
                 elevation: 2,
                 margin: EdgeInsets.symmetric(vertical: 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                        child: Image.asset(
-                          imageUrl,
-                          //  'assets/images/thumbnail_images/lifeatbace.jpg',
-                          fit: BoxFit.cover,
-                        ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      12.0), // Apply border radius to keep the blur within bounds
+                  child: Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: ExactAssetImage(imageUrl),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 1.0, horizontal: 8.0),
+                    child: BackdropFilter(
+                      blendMode: BlendMode.srcOver,
+                      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3, tileMode: TileMode.clamp),
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          
+                          color: Colors.black.withOpacity(0.01),
+                          borderRadius: BorderRadius.circular(
+                              12.0), // Match the radius here as well
+                        ),
                         child: Text(
                           category,
-                          textAlign: TextAlign.start,
                           style: Fonts.firasans(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w400,
-                            color: ColorPallete.blackColor,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w600,
+                            color: ColorPallete.whiteColor,
                           ),
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
+
+              // child: Card(
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(12.0),
+              //   ),
+              //   //           color: ColorPallete.offWhiteListTileColor,
+              //   elevation: 2,
+              //   margin: EdgeInsets.symmetric(vertical: 4),
+              //   // padding: const EdgeInsets.all(4.0),
+              //   child: Container(
+              //     height: 200,
+              //     width: double.maxFinite,
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(12.0),
+              //       image: DecorationImage(
+              //         image: ExactAssetImage(imageUrl),
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //     child: AspectRatio(
+              //       aspectRatio: 16 / 9,
+              //       child: ClipRRect(
+              //         borderRadius: BorderRadius.circular(12.0),
+              //         // borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              //         child: BackdropFilter(
+              //           filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             color: Colors.grey.withOpacity(0.0001),
+              //             child: Text(
+              //               category,
+              //               textAlign: TextAlign.start,
+              //               style: Fonts.firasans(
+              //                 fontSize: 28,
+              //                 fontWeight: FontWeight.w600,
+              //                 color: ColorPallete.whiteColor,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // child: Card(
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(12.0),
+              // ),
+              // //           color: ColorPallete.offWhiteListTileColor,
+              // elevation: 2,
+              // margin: EdgeInsets.symmetric(vertical: 4),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.stretch,
+              //     children: <Widget>[
+              //       AspectRatio(
+              //         aspectRatio: 16 / 9,
+              //         child: ClipRRect(
+              //           borderRadius: BorderRadius.all(Radius.circular(12.0)),
+              //           child: Image.asset(
+              //             imageUrl,
+              //             //  'assets/images/thumbnail_images/lifeatbace.jpg',
+              //             fit: BoxFit.cover,
+              //           ),
+              //         ),
+              //       ),
+              //       Padding(
+              //         padding: const EdgeInsets.all(5.0),
+              //         child: Padding(
+              //           padding: const EdgeInsets.symmetric(
+              //               vertical: 1.0, horizontal: 8.0),
+              // child: Text(
+              //   category,
+              //   textAlign: TextAlign.start,
+              //   style: Fonts.firasans(
+              //     fontSize: 22,
+              //     fontWeight: FontWeight.w400,
+              //     color: ColorPallete.blackColor,
+              //   ),
+              // ),
+              // ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             );
           }),
       floatingActionButton: FloatingActionButton.extended(

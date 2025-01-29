@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mayapur_bace/core/theme/color_pallet.dart';
 import 'package:mayapur_bace/core/theme/fonts.dart';
-import 'package:mayapur_bace/features/seva/presentation/widgets/edit_seva_dialog.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // class SevaDetailsArguments {
@@ -18,40 +17,40 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //   });
 // }
 
-class SevaDetailsScreen extends StatefulWidget {
-  // const SevaDetailsScreen({super.key, required this.inputEmail, required this.seva, required this.fullName});
+class AttendenceDetailsScreen extends StatefulWidget {
+  // const AttendenceDetailsScreen({super.key, required this.inputEmail, required this.seva, required this.fullName});
   // final String inputEmail;
 
   // final String  seva;
-
-  final String fullName;
   final String inputEmail;
-  final String seva;
+  final String fullName;
 
-  const SevaDetailsScreen({
+  const AttendenceDetailsScreen({
     Key? key,
     required this.inputEmail,
-    required this.seva,
     required this.fullName,
   }) : super(key: key);
 
   @override
-  State<SevaDetailsScreen> createState() => _SevaDetailsScreenState();
+  State<AttendenceDetailsScreen> createState() => _AttendenceDetailsState();
 }
 
-class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
-  Map<DateTime, String> _dailyWorkStatus = {};
+class _AttendenceDetailsState extends State<AttendenceDetailsScreen> {
+  Map<DateTime, Map<String, String>> _dailyAttendenceStatus = {};
   DateTime _selectedDay = DateTime.now();
+  late String formattedTime;
 
   @override
   void initState() {
     super.initState();
+    formattedTime = DateFormat('hh:mm').format(_selectedDay);
+
     _fetchDailyWorkStatus(widget.inputEmail);
   }
 
   void _fetchDailyWorkStatus(String inputEmail) {
     FirebaseFirestore.instance
-        .collection("seva_calendar")
+        .collection("morning_program_attendence")
         .doc(inputEmail)
         .get()
         .then((doc) {
@@ -60,7 +59,10 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           data.forEach((key, value) {
             DateTime date = DateTime.parse(key);
-            _dailyWorkStatus[date] = value["status"];
+            _dailyAttendenceStatus[date] = {
+              "status": value["status"],
+              "markingTime": value["markingTime"]
+            };
           });
         });
       }
@@ -75,7 +77,7 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(
-          "Daily Seva Details",
+          "Attendence Details",
           style: Fonts.nunitoSans(
             fontSize: 25,
             fontWeight: FontWeight.w600,
@@ -114,27 +116,6 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                     ],
                   ),
                 ),
-                RichText(
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    text: 'Seva: ',
-                    style: Fonts.firasans(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
-                      color: ColorPallete.blackColor,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: widget.seva,
-                        style: Fonts.firasans(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                          color: ColorPallete.darkDlueColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
             TableCalendar(
@@ -166,11 +147,16 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                     fontSize: 16,
                     fontWeight: FontWeight.w600),
                 selectedDecoration: BoxDecoration(
-                  color: Colors.orange,
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.red,
+                          width: 5,
+                          strokeAlign: BorderSide.strokeAlignCenter)),
+                  color: Colors.blueAccent,
                   shape: BoxShape.circle,
                 ),
                 todayDecoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.blueGrey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -202,14 +188,20 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
               ),
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
-                  if (_dailyWorkStatus.containsKey(day)) {
+                  if (_dailyAttendenceStatus.containsKey(day)) {
                     return Container(
                       margin: const EdgeInsets.all(9.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: _dailyWorkStatus[day] == "✔ Completed"
+                        color: _dailyAttendenceStatus[day]?["status"] ==
+                                '✔ Present'
                             ? Colors.green
-                            : Colors.red,
+                            : _dailyAttendenceStatus[day]?["status"] == 'Late'
+                                ? Colors.orange
+                                : _dailyAttendenceStatus[day]?["status"] ==
+                                        '✘ Absent'
+                                    ? Colors.red
+                                    : null,
                         shape: BoxShape.rectangle,
                       ),
                       child: Center(
@@ -227,24 +219,31 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                 },
               ),
             ),
-            if (_dailyWorkStatus[_selectedDay] != null)
+            if (_dailyAttendenceStatus[_selectedDay] != null)
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                 child: Container(
                   decoration: BoxDecoration(
                       // color: ColorPallete.blueColor,
-                      color: _dailyWorkStatus[_selectedDay] == '✔ Completed'
+                      color: _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                              '✔ Present'
                           ? Colors.green
-                          : Colors.red, // Change color based on status
-
+                          : _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                                  'Late'
+                              ? Colors.orange
+                              : _dailyAttendenceStatus[_selectedDay]
+                                          ?["status"] ==
+                                      '✘ Absent'
+                                  ? Colors.red
+                                  : Colors.blue,
                       borderRadius: const BorderRadius.all(Radius.circular(6))),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
-                    "Seva for ${DateFormat('dd MMMM yyyy').format(_selectedDay)} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                    "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'}",
 
-                    // "Seva for ${_selectedDay.toLocal()} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                    // "Seva for ${_selectedDay.toLocal()} is ${_dailyAttendenceStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
                     style: Fonts.popins(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -252,27 +251,6 @@ class _SevaDetailsScreenState extends State<SevaDetailsScreen> {
                   ),
                 ),
               ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                backgroundColor: const Color.fromARGB(255, 65, 135, 240),
-              ),
-              onPressed: () {
-                sevaUpdateDialog(
-                    context, widget.inputEmail, widget.seva, widget.fullName);
-              },
-              child: Text(
-                'Change Seva',
-                style: Fonts.ubuntu(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: ColorPallete.blackColor),
-              ),
-            ),
           ],
         ),
       ),

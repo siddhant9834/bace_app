@@ -7,23 +7,31 @@ import 'package:mayapur_bace/features/seva/presentation/pages/seva_list_screen.d
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:intl/intl.dart';
 
-class DailySevaScreen extends StatefulWidget {
-  const DailySevaScreen({super.key});
+class AttendenceCalendar extends StatefulWidget {
+  const AttendenceCalendar({super.key});
 
   @override
   _DailyWorkScreenState createState() => _DailyWorkScreenState();
 }
 
-class _DailyWorkScreenState extends State<DailySevaScreen> {
+class _DailyWorkScreenState extends State<AttendenceCalendar> {
+  // DateTime _selectedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
-  Map<DateTime, String> _dailyWorkStatus = {};
+
+  // Map<DateTime, String> _dailyAttendenceStatus = {};
+  Map<DateTime, Map<String, String>> _dailyAttendenceStatus = {};
   String? userEmail;
   String? sevaAssigned;
+  late String formattedTime;
 
   @override
   void initState() {
     super.initState();
+    // String formattedDate = DateFormat('dd:MM:yy').format(_selectedDay);
+    formattedTime = DateFormat('hh:mm').format(_selectedDay);
+
     _fetchUserEmail();
   }
 
@@ -40,7 +48,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
   void _fetchDailyWorkStatus() {
     if (userEmail != null) {
       FirebaseFirestore.instance
-          .collection("seva_calendar")
+          .collection("morning_program_attendence")
           .doc(userEmail)
           .get()
           .then((doc) {
@@ -49,7 +57,11 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             data.forEach((key, value) {
               DateTime date = DateTime.parse(key);
-              _dailyWorkStatus[date] = value["status"];
+              _dailyAttendenceStatus[date] = {
+                "status": value["status"],
+                "markingTime": value["markingTime"]
+              };
+              // _dailyAttendenceStatus[date] = value["status"];
             });
           });
         }
@@ -60,17 +72,17 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorPallete.fadeYellow,
       appBar: AppBar(
         title: Text(
-          "Daily Seva",
+          "Attendence",
           style: Fonts.nunitoSans(
             fontSize: 25,
             fontWeight: FontWeight.w600,
             color: ColorPallete.blackColor,
           ),
         ),
-        backgroundColor: ColorPallete.whiteColor,
+        backgroundColor: ColorPallete.fadeYellow,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 17),
@@ -79,7 +91,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Your Seva Calendar",
+                "Your Daily Attendence",
                 style: Fonts.firasans(
                     fontSize: 26,
                     fontWeight: FontWeight.w500,
@@ -92,25 +104,25 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                 child: RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(
-                        text: "Assigned Seva: ",
-                        style: Fonts.firasans(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black, // Changed to black
-                        ),
-                      ),
-                      TextSpan(
-                        text: currentUsersSeva == "NA"
-                            ? 'You are mukta form seva'
-                            : currentUsersSeva,
-                        style: Fonts.firasans(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: ColorPallete
-                              .darkGreenColor, // Changed to dark green
-                        ),
-                      ),
+                      // TextSpan(
+                      //   text: "Assigned Seva: ",
+                      //   style: Fonts.firasans(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: Colors.black, // Changed to black
+                      //   ),
+                      // ),
+                      // TextSpan(
+                      //   text: currentUsersSeva == "NA"
+                      //       ? 'You are mukta form seva'
+                      //       : currentUsersSeva,
+                      //   style: Fonts.firasans(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.w500,
+                      //     color: ColorPallete
+                      //         .darkGreenColor, // Changed to dark green
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -130,8 +142,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                   showMessageDialog(
                       "You cannot update seva as it is not assigned. If you want Seva, contact the Seva Incharge or OC.");
                 } else {
-                  _showTaskDialog(
-                      _dailyWorkStatus); // Show the dialog to update the status
+                  _showTaskDialog(_dailyAttendenceStatus);
                 }
               },
 
@@ -186,7 +197,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                   shape: BoxShape.circle,
                 ),
                 todayDecoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.blueGrey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -218,14 +229,20 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
               ),
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
-                  if (_dailyWorkStatus.containsKey(day)) {
+                  if (_dailyAttendenceStatus.containsKey(day)) {
                     return Container(
                       margin: EdgeInsets.all(9.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: _dailyWorkStatus[day] == "✔ Completed"
+                        color: _dailyAttendenceStatus[day]?["status"] ==
+                                '✔ Present'
                             ? Colors.green
-                            : Colors.red,
+                            : _dailyAttendenceStatus[day]?["status"] == 'Late'
+                                ? Colors.orange
+                                : _dailyAttendenceStatus[day]?["status"] ==
+                                        '✘ Absent'
+                                    ? Colors.red
+                                    : null,
                         shape: BoxShape.rectangle,
                       ),
                       child: Center(
@@ -240,18 +257,26 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                 },
               ),
             ),
-            if (_dailyWorkStatus[_selectedDay] != null)
+            if (_dailyAttendenceStatus[_selectedDay] != null)
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: _dailyWorkStatus[_selectedDay] == '✔ Completed'
+                      color: _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                              '✔ Present'
                           ? Colors.green
-                          : Colors.red,
+                          : _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                                  'Late'
+                              ? Colors.orange
+                              : _dailyAttendenceStatus[_selectedDay]
+                                          ?["status"] ==
+                                      '✘ Absent'
+                                  ? Colors.red
+                                  : Colors.blue,
                       borderRadius: BorderRadius.all(Radius.circular(6))),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
-                    "Seva for ${DateFormat('dd MMMM yyyy').format(_selectedDay)} is ${_dailyWorkStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
+                    "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'}",
                     style: Fonts.popins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -316,7 +341,8 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
         });
   }
 
-  void _showTaskDialog(Map<DateTime, String> _dailyWorkStatus) {
+  void _showTaskDialog(
+      Map<DateTime, Map<String, String>> _dailyAttendenceStatus) {
     showDialog(
       context: context,
       builder: (context) {
@@ -325,7 +351,9 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Seva for ${DateFormat('dd MMMM yyyy').format(_selectedDay)}",
+                "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)}  Time: ${_dailyAttendenceStatus[_selectedDay]?["markingTime"] ?? formattedTime}",
+                // DateFormat("yyyy-MM-dd HH:mm:ss")
+                // DateFormat.yMd(_selectedDay).add_jm().toString(),
                 // style: Fonts.nunitoSans(fontSize: 30, fontWeight: FontWeight.w400, color: Colors.black),
                 style: Fonts.nunitoSans(
                   fontSize: 30,
@@ -337,15 +365,29 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
 
                 child: Text(
-                  _dailyWorkStatus[_selectedDay] ?? 'Pending',
+                  // ${_dailyAttendenceStatus[_selectedDay]?["status"]}
+                  _dailyAttendenceStatus[_selectedDay]?["status"] ?? 'Pending',
                   style: Fonts.nunitoSans(
                     fontSize: 30,
                     fontWeight: FontWeight.w500,
-                    color: _dailyWorkStatus[_selectedDay] == '✔ Completed'
+                    color: _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                            '✔ Present'
                         ? Colors.green
-                        : _dailyWorkStatus[_selectedDay] == null
-                            ? Colors.blue
-                            : Colors.red,
+                        : _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                                'Late'
+                            ? Colors.orange
+                            : _dailyAttendenceStatus[_selectedDay]?["status"] ==
+                                    '✘ Absent'
+                                ? Colors.red
+                                : Colors.blue,
+
+                    // _dailyAttendenceStatus[_selectedDay]?["status"] == '✔ Present'
+                    //     ? Colors.green:
+                    //     _dailyAttendenceStatus[_selectedDay]?["status"] == 'Late' ?Colors.orange:
+
+                    //     _dailyAttendenceStatus[_selectedDay]?["status"] == '✔ Absent'
+                    //         ? Colors.red
+                    //         : Colors.blue,
                   ),
                 ),
                 // child: Text(
@@ -371,7 +413,7 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                     size: 40,
                   ),
                   onPressed: () {
-                    _updateTaskStatus("✔ Completed");
+                    _updateTaskStatus("✔ Present", formattedTime);
                     Future.delayed(Duration(milliseconds: 200), () {
                       Navigator.pop(context);
                     });
@@ -383,7 +425,19 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
                     size: 40,
                   ),
                   onPressed: () {
-                    _updateTaskStatus("✘ Not Completed");
+                    _updateTaskStatus("✘ Absent", formattedTime);
+                    Future.delayed(Duration(milliseconds: 200), () {
+                      Navigator.pop(context);
+                    });
+                  }),
+              IconButton(
+                  icon: Icon(
+                    Icons.running_with_errors_sharp,
+                    color: ColorPallete.orangeColor,
+                    size: 40,
+                  ),
+                  onPressed: () {
+                    _updateTaskStatus("Late", formattedTime);
                     Future.delayed(Duration(milliseconds: 200), () {
                       Navigator.pop(context);
                     });
@@ -395,17 +449,26 @@ class _DailyWorkScreenState extends State<DailySevaScreen> {
     );
   }
 
-  void _updateTaskStatus(String status) async {
+  void _updateTaskStatus(String status, String time) async {
+    // final formattedDateTime = DateFormat('dd-MM-yy' 'HH:mm:ss').format(_selectedDay);
+    log(_selectedDay.toString());
     setState(() {
-      _dailyWorkStatus[_selectedDay] = status;
+      _dailyAttendenceStatus[_selectedDay]?["status"] = status;
+      _dailyAttendenceStatus[_selectedDay]?["markingTime"] = time;
     });
 
     if (userEmail != null) {
       log(userEmail.toString());
 
-      FirebaseFirestore.instance.collection("seva_calendar").doc(userEmail).set(
+      FirebaseFirestore.instance
+          .collection("morning_program_attendence")
+          .doc(userEmail)
+          .set(
         {
-          _selectedDay.toIso8601String(): {"status": status},
+          _selectedDay.toIso8601String(): {
+            "status": status,
+            "markingTime": time
+          },
         },
         SetOptions(merge: true),
       );

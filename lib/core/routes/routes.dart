@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mayapur_bace/core/routes/page_route_constants.dart';
 import 'package:mayapur_bace/core/side_drawer/presentation/pages/drawer.dart';
+import 'package:mayapur_bace/features/attendence/presentation/attendence.dart';
+import 'package:mayapur_bace/features/attendence/presentation/attendence_details.dart';
 import 'package:mayapur_bace/features/authentication/presentation/pages/login_page.dart';
 import 'package:mayapur_bace/features/authentication/presentation/pages/registration_screen.dart';
 import 'package:mayapur_bace/features/home/presentation/pages/home_screen.dart';
@@ -26,6 +28,10 @@ final membersTabNavigatorKey = GlobalKey<NavigatorState>();
 final sevaNavigationKey = GlobalKey<NavigatorState>();
 final sevaListNavigatorKey = GlobalKey<NavigatorState>();
 final morningProgramTabNavigatorKey = GlobalKey<NavigatorState>();
+
+final attendenceTabNavigatorKey = GlobalKey<NavigatorState>();
+
+final attendenceDetailsTabNavigatorKey = GlobalKey<NavigatorState>();
 
 const String KEYLOGIN = 'Login';
 
@@ -184,7 +190,8 @@ final GoRouter router = GoRouter(
                                 state.pathParameters['inputEmail'] as String,
                             seva: state.pathParameters['seva'] as String,
                             fullName:
-                                state.pathParameters['fullName'] as String);
+                                state.pathParameters['fullName'] as String
+                        );
                       },
                       // final List data = state.extra as List;
                       // final inputEmail = data[0];
@@ -214,43 +221,40 @@ final GoRouter router = GoRouter(
                       //   ),
                       // );
                     ),
-                    // GoRoute(
-                    //     path: 'seva_details_screen',
-                    //     name: MyAppRouteConstants.sevaDetailsScreen,
-                    //     pageBuilder: (context, state) {
-                    //       final inputEmail = state.extra as String;
-                    //       // final selectedCategory = state.pathParameters['categoryId'] ?? ''; this line created very big chaos in project developement i am not removing this line because by this rememberance we can avoid such bugs
-                    //       (context, state) {
-                    //         final data = state.extra as Map<String, dynamic>;
-                    //         final seva = data['seva'];
-                    //         final fullName = data['fullName'];
-
-                    //         return SevaDetailsScreen(
-                    //             inputEmail: inputEmail,
-                    //             seva: seva,
-                    //             fullName: fullName);
-                    //       };
-                    //       // return MaterialPage(
-                    //       //   key: state.pageKey,
-                    //       //   child:
-                    //       //       SevaDetailsScreen(inputEmail: inputEmail),
-                    //       // );
-                    //       //  selectDate(context);
-                    //     }
-                    //   )
+                  
                   ])
             ]),
             StatefulShellBranch(navigatorKey: membersTabNavigatorKey, routes: [
               GoRoute(
-                path: '/members',
-                name: MyAppRouteConstants.membersScreenList,
-                pageBuilder: (context, state) {
-                  return MaterialPage(
-                    key: state.pageKey,
-                    child: UserListView(),
-                  );
-                },
-              )
+                  path: '/members',
+                  name: MyAppRouteConstants.membersScreenList,
+                  pageBuilder: (context, state) {
+                    return MaterialPage(
+                      key: state.pageKey,
+                      child: UserListView(),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                        path: 'show_attendence_details/:inputEmail/:fullName',
+                        name: MyAppRouteConstants.attendenceDetailsScreen,
+                        builder: (context, state) {
+                          // final selectDate = state.extra as DateTime?;
+                          // final inputEmail = state.extra as String?;
+                          // final inputName = state.extra as String?;
+
+                          return  AttendenceDetailsScreen(
+                                  inputEmail:
+                                state.pathParameters['inputEmail'] as String,
+                            fullName:
+                                state.pathParameters['fullName'] as String
+                                  // inputEmail: inputEmail.toString(),
+                                  // fullName: inputName.toString()
+                              
+                          );
+                          //  selectDate(context);
+                        })
+                  ])
             ]),
             StatefulShellBranch(
                 navigatorKey: morningProgramTabNavigatorKey,
@@ -266,5 +270,40 @@ final GoRouter router = GoRouter(
                     },
                   )
                 ]),
+            StatefulShellBranch(
+                navigatorKey: attendenceTabNavigatorKey,
+                routes: [
+                  GoRoute(
+                    path: '/attendence_page',
+                    name: MyAppRouteConstants.attendenceScreen,
+                    pageBuilder: (context, state) {
+                      return MaterialPage(
+                        key: state.pageKey,
+                        child: AttendenceCalendar(),
+                      );
+                    },
+                  )
+                ]),
+//             StatefulShellBranch(
+//                 navigatorKey: attendenceDetailsTabNavigatorKey,
+//                 routes: [
+//                   GoRoute(
+//                     path: '/attendence_details_page',
+//                     name: MyAppRouteConstants.attendenceDetailsScreen,
+//                     pageBuilder: (context, state) {
+//                       return MaterialPage(
+
+//                         key: state.pageKey,
+//                         child: AttendenceDetailsScreen(
+//  inputEmail:
+//                                 state.pathParameters['inputEmail'] as String,
+//                             fullName:
+//                                 state.pathParameters['fullName'] as String
+
+//                         ),
+//                       );
+//                     },
+//                   )
+//                 ]),
           ]),
     ]);

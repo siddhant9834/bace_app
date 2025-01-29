@@ -22,5 +22,8 @@ class MyAppRouteConstants {
   static const String sevaListScreen = 'seva_list_screen';
   static const String sevaDetailsScreen = 'seva_details_screen';
     static const String morningProgramScreen = 'morning_program_screen';
+        static const String attendenceScreen = 'attendenceScreen';
+        static const String attendenceDetailsScreen = 'attendence_details_screen';
+// static const String attendenceDetails ='attendence_details'
 
 }
