@@ -23,15 +23,18 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
   // Map<DateTime, String> _dailyAttendenceStatus = {};
   Map<DateTime, Map<String, String>> _dailyAttendenceStatus = {};
   String? userEmail;
-  String? sevaAssigned;
   late String formattedTime;
-
+  String presentTimeStart = "04:00";
+  String presentTimeEnd = "04:30";
+  String lateTimeStart = "04:30";
+  String lateTimeEnd = "04:45";
+  // late String cleanFormattedTime;
+  late String formattedTimeWithDate;
   @override
   void initState() {
     super.initState();
-    // String formattedDate = DateFormat('dd:MM:yy').format(_selectedDay);
     formattedTime = DateFormat('hh:mm').format(_selectedDay);
-
+    log(formattedTime.toString());
     _fetchUserEmail();
   }
 
@@ -41,11 +44,11 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
       setState(() {
         userEmail = user.email;
       });
-      _fetchDailyWorkStatus();
+      _fetchDailyAttendenceStatus();
     }
   }
 
-  void _fetchDailyWorkStatus() {
+  void _fetchDailyAttendenceStatus() {
     if (userEmail != null) {
       FirebaseFirestore.instance
           .collection("morning_program_attendence")
@@ -67,6 +70,56 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
         }
       });
     }
+  }
+
+  void showMessageDialog(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text(
+              'Message',
+              style: TextStyle(fontSize: 30),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message,
+                  style: Fonts.nunitoSans(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                    color: ColorPallete.blackColor,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    backgroundColor: const Color.fromARGB(255, 65, 135, 240),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Ok',
+                    style: Fonts.ubuntu(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: ColorPallete.blackColor),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   @override
@@ -103,27 +156,7 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
                 padding: const EdgeInsets.all(8.0),
                 child: RichText(
                   text: TextSpan(
-                    children: [
-                      // TextSpan(
-                      //   text: "Assigned Seva: ",
-                      //   style: Fonts.firasans(
-                      //     fontSize: 18,
-                      //     fontWeight: FontWeight.w500,
-                      //     color: Colors.black, // Changed to black
-                      //   ),
-                      // ),
-                      // TextSpan(
-                      //   text: currentUsersSeva == "NA"
-                      //       ? 'You are mukta form seva'
-                      //       : currentUsersSeva,
-                      //   style: Fonts.firasans(
-                      //     fontSize: 18,
-                      //     fontWeight: FontWeight.w500,
-                      //     color: ColorPallete
-                      //         .darkGreenColor, // Changed to dark green
-                      //   ),
-                      // ),
-                    ],
+                    children: [],
                   ),
                 ),
               ),
@@ -132,48 +165,32 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
               firstDay: DateTime(2023, 1, 1),
               lastDay: DateTime(2030, 12, 31),
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   _selectedDay = selectedDay;
                 });
-
-                if (currentUsersSeva == "NA") {
-                  showMessageDialog(
-                      "You cannot update seva as it is not assigned. If you want Seva, contact the Seva Incharge or OC.");
-                } else {
+//  if (currentUsersSeva == "NA") {
+//                   showMessageDialog(
+//                       "You can update only between 4:00 AM to 4:45 AM (Morning Only)");
+//                 }
+                if(DateFormat('dd MMM yyyy').format(_selectedDay) == DateFormat('dd MMM yyyy').format(DateTime.now())){
                   _showTaskDialog(_dailyAttendenceStatus);
+
+                  // _showTaskDialog(
+                  //     _dailyWorkStatus); // Show the dialog to update the status
                 }
+                else{
+                      showMessageDialog(
+                      "You can mark only todays (${DateFormat('dd-MMM').format(DateTime.now())}) attendence ");
+                }
+
+                // if (currentUsersSeva == "NA") {
+                //   showMessageDialog(
+                //       "You cannot update seva as it is not assigned. If you want Seva, contact the Seva Incharge or OC.");
+                // } else {
+                // _showTaskDialog(_dailyAttendenceStatus);
+                // }
               },
-
-              // onDaySelected: (selectedDay, focusedDay) {
-              //   if (currentUsersSeva == "NA") {
-              //     showMessageDialog(
-              //         "You cannot update seva as it is not assigned, if you want Seva then contact Seva Incharge or OC.");
-              //   } else {
-              //     setState(() {
-              //       _selectedDay = selectedDay;
-              //     });
-              //     log(currentUsersSeva.toString());
-              //   }
-              // },
-//               onDaySelected: (selectedDay, focusedDay) {
-//                 log(currentUsersSeva.toString());
-// onDaySelected: (selectedDay, focusedDay) {
-//   if (currentUsersSeva == "Not Assigned") {
-//     showMessageDialog("You cannot update seva as it is not assigned.");
-//   } else {
-//     setState(() {
-//       _selectedDay = selectedDay;
-//     });
-//     log(currentUsersSeva.toString());
-//   }
-// };
-
-//                 // setState(() {
-//                 //   _selectedDay = selectedDay;
-//                 // });
-//               },
               calendarStyle: const CalendarStyle(
                 selectedTextStyle: TextStyle(
                     color: Colors.white,
@@ -276,7 +293,7 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
                       borderRadius: BorderRadius.all(Radius.circular(6))),
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
-                    "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'}",
+                    "Attendence for ${DateFormat('dd-MMM-yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'}",
                     style: Fonts.popins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -291,56 +308,6 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
     );
   }
 
-  void showMessageDialog(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text(
-              'Message',
-              style: TextStyle(fontSize: 30),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  message,
-                  style: Fonts.nunitoSans(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w500,
-                    color: ColorPallete.blackColor,
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    backgroundColor: const Color.fromARGB(255, 65, 135, 240),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Ok',
-                    style: Fonts.ubuntu(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: ColorPallete.blackColor),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
   void _showTaskDialog(
       Map<DateTime, Map<String, String>> _dailyAttendenceStatus) {
     showDialog(
@@ -351,7 +318,7 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)}  Time: ${_dailyAttendenceStatus[_selectedDay]?["markingTime"] ?? formattedTime}",
+                "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)}  Marking Time: ${_dailyAttendenceStatus[_selectedDay]?["markingTime"] ?? formattedTime}",
                 // DateFormat("yyyy-MM-dd HH:mm:ss")
                 // DateFormat.yMd(_selectedDay).add_jm().toString(),
                 // style: Fonts.nunitoSans(fontSize: 30, fontWeight: FontWeight.w400, color: Colors.black),
@@ -413,7 +380,24 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
                     size: 40,
                   ),
                   onPressed: () {
-                    _updateTaskStatus("✔ Present", formattedTime);
+                    formattedTimeWithDate =
+                        DateFormat('dd-MMM-yyyy hh:mm a').format(DateTime.now());
+
+                    if (DateFormat("HH:mm").parse(formattedTime).isAfter(
+                            DateFormat("HH:mm").parse(presentTimeStart)) &&
+                        DateFormat("HH:mm").parse(formattedTime).isBefore(
+                            DateFormat("HH:mm").parse(presentTimeEnd))) {
+                      _updateTaskStatus("✔ Present", formattedTimeWithDate);
+                    } else if (DateFormat("hh:mm").parse(formattedTime).isAfter(
+                            DateFormat("hh:mm").parse(lateTimeStart)) &&
+                        DateFormat("hh:mm")
+                            .parse(formattedTime)
+                            .isBefore(DateFormat("hh:mm").parse(lateTimeEnd))) {
+                      _updateTaskStatus("Late", formattedTimeWithDate);
+                    } else {
+                      _updateTaskStatus("✘ Absent", formattedTimeWithDate);
+                    }
+
                     Future.delayed(Duration(milliseconds: 200), () {
                       Navigator.pop(context);
                     });
@@ -425,7 +409,11 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
                     size: 40,
                   ),
                   onPressed: () {
-                    _updateTaskStatus("✘ Absent", formattedTime);
+                    formattedTimeWithDate =
+                        DateFormat('hh:mm dd-MMM-yyyy').format(DateTime.now());
+
+                    _updateTaskStatus("✘ Absent", formattedTimeWithDate);
+
                     Future.delayed(Duration(milliseconds: 200), () {
                       Navigator.pop(context);
                     });
@@ -437,10 +425,36 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
                     size: 40,
                   ),
                   onPressed: () {
-                    _updateTaskStatus("Late", formattedTime);
-                    Future.delayed(Duration(milliseconds: 200), () {
-                      Navigator.pop(context);
-                    });
+                    formattedTimeWithDate =
+                        DateFormat('hh:mm dd-MMM-yyyy').format(DateTime.now());
+                    if (DateFormat("HH:mm").parse(formattedTime).isAfter(
+                            DateFormat("HH:mm").parse(presentTimeStart)) &&
+                        DateFormat("HH:mm").parse(formattedTime).isBefore(
+                            DateFormat("HH:mm").parse(presentTimeEnd))) {
+                      _updateTaskStatus("✔ Present", formattedTimeWithDate);
+                    } else if (DateFormat("hh:mm").parse(formattedTime).isAfter(
+                            DateFormat("hh:mm").parse(lateTimeStart)) &&
+                        DateFormat("hh:mm")
+                            .parse(formattedTime)
+                            .isBefore(DateFormat("hh:mm").parse(lateTimeEnd))) {
+                      log("berfore late");
+                      _updateTaskStatus("Late", formattedTimeWithDate);
+                      log("berfore late");
+
+                      Future.delayed(Duration(milliseconds: 200), () {
+                        Navigator.pop(context);
+                      });
+                      log("berfore late");
+                    }
+                    else{
+                          showMessageDialog(
+                      "You can mark late in between 4:30 AM to 4:45 AM");
+                    }
+               
+                    log("Current Time: $formattedTime");
+                    log("Late Start: $lateTimeStart, Late End: $lateTimeEnd");
+
+                    // _updateTaskStatus("Late", formattedTime);
                   }),
             ],
           ),
@@ -455,6 +469,7 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
     setState(() {
       _dailyAttendenceStatus[_selectedDay]?["status"] = status;
       _dailyAttendenceStatus[_selectedDay]?["markingTime"] = time;
+      log(_dailyAttendenceStatus[_selectedDay].toString());
     });
 
     if (userEmail != null) {
@@ -472,6 +487,7 @@ class _DailyWorkScreenState extends State<AttendenceCalendar> {
         },
         SetOptions(merge: true),
       );
+      _fetchDailyAttendenceStatus();
     }
   }
 }

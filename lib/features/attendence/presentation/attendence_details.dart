@@ -241,7 +241,7 @@ class _AttendenceDetailsState extends State<AttendenceDetailsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
-                    "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'}",
+                    "Attendence for ${DateFormat('dd MMMM yy').format(_selectedDay)} is ${_dailyAttendenceStatus[_selectedDay]?['status'] == '✔ Present' ? '✔ Present' : _dailyAttendenceStatus[_selectedDay]?['status'] == 'Late' ? 'Late' : _dailyAttendenceStatus[_selectedDay]?['status'] == '✘ Absent' ? '✘ Absent' : 'Pending'} is Marked on: ${_dailyAttendenceStatus[_selectedDay]?['markingTime']}",
 
                     // "Seva for ${_selectedDay.toLocal()} is ${_dailyAttendenceStatus[_selectedDay] == '✔ Completed' ? '✔ Completed' : '✘ Not Completed'}",
                     style: Fonts.popins(

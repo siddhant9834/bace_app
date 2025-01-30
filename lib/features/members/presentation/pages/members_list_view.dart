@@ -112,7 +112,9 @@ class UserListView extends StatelessWidget {
                                 onTap: () {
                                   if (globalRole == 'Admin' ||
                                       globalRole == 'Authority' ||
-                                      globalRole == 'OC') {
+                                      globalRole == 'OC' ||
+                                      globalRole == 'MP Inc'
+                                  ) {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
